@@ -86,7 +86,7 @@ class ModuleManager {
     module.controllers.get("index").configure(this.services);
     try {
       let router = this.services.get("router");
-      let routes = require(module.path + "/routes");
+      let routes = module.config.get("routes");
 
       routes.forEach(options => {
         let action = options.action.split(".");

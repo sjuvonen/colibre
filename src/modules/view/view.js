@@ -13,6 +13,9 @@ class TemplateMap {
   }
 
   map(path) {
+    if (this.paths.has(path)) {
+      return this.paths.get(path) + ".html";
+    }
     let parts = path.split("/");
     let module_id = parts.shift();
     if (this.paths.has(module_id)) {

@@ -1,5 +1,5 @@
 "use strict";
 
 exports.configure = services => {
-  console.log("configure demo");
+  // console.log("configure demo");
 };

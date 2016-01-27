@@ -6,7 +6,9 @@ exports.configure = services => {
   let events = services.get("event.manager");
   let view = new View;
 
+  services.register("view", view);
   events.addEmitter("view", view.events);
+
   events.on("app.response", event => view.onResponse(event));
 
   events.on("modules.load", module => {

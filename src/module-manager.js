@@ -83,6 +83,7 @@ class ModuleManager {
   }
 
   initialize(module) {
+    console.log("configure", module.name);
     module.controllers.get("index").configure(this.services);
     try {
       let router = this.services.get("router");

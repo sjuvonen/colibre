@@ -7,6 +7,23 @@ let ServiceManager = require("./service-manager").ServiceManager;
 let ModuleManager = require("./module-manager").ModuleManager;
 let Router = require("./router").Router;
 
+class Config {
+  constructor(config) {
+    this.config = config;
+  }
+
+  get(key, default_value) {
+    let parts = key.split("/");
+    let last = parts.pop();
+    let root = this.config;
+
+    parts.forEach(key => {
+      root = root[key] || {};
+    });
+    return root[last];
+  }
+}
+
 class Request {
   constructor(req) {
     Object.defineProperty(this, "meta", {
@@ -82,6 +99,7 @@ class App {
 
     this.services = new ServiceManager;
     this.services.register("event.manager", this.sharedEvents);
+    this.services.register("config", new Config(this.config));
 
     this.modules = new ModuleManager(this.services);
     this.services.register("module.manager", this.modules);

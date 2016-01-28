@@ -99,6 +99,7 @@ class App {
 
     this.services = new ServiceManager;
     this.services.register("event.manager", this.sharedEvents);
+    this.services.register("app", this);
     this.services.register("config", new Config(this.config));
 
     this.modules = new ModuleManager(this.services);
@@ -112,6 +113,7 @@ class App {
     this.sharedEvents.addEmitter("modules", this.modules.events);
 
     this.events.on("ready", () => {
+      console.log("READY");
       this.use(1000, event => this.onRequest(event));
       this.use(5000, event => this.onResponse(event));
     });
@@ -159,11 +161,13 @@ class App {
     }
     this.baseApp = express();
     this.baseApp.use(express.static("public"));
-    this.baseApp.use((req, res, next) => this.onRequestBegin(req, res, next));
 
     return this.events.emit("bootstrap")
       .then(() => this.events.emit("ready"))
       .then(() => {
+        
+        this.baseApp.use((req, res, next) => this.onRequestBegin(req, res, next));
+
         let config = this.config.server || {};
         let port = config.port || 8000;
         let address = config.address || "localhost";

@@ -79,10 +79,10 @@ class ViewData {
 
 class View {
   constructor() {
-    this.templates = new TemplateMap;
     this.events = new AsyncEventManager;
     this.events.on("render", event => this.onRender(event));
     this.renderer = new TwigRenderer;
+    this.templates = new TemplateMap;
   }
 
   /**
@@ -96,11 +96,25 @@ class View {
   }
 
   onRender(view_event) {
-    let template = this.templates.map(view_event.template);
-    return this.renderer.render(template, view_event.variables).then(rendered => {
+    let variables = view_event.variables;
+    let subs = Object.keys(variables).map(key => {
+      let value = variables[key];
+      if (value instanceof ViewData) {
+        return this.render(value.template, value.variables).then(result => {
+          variables[key] = result;
+        });
+      }
+    });
+
+    return Promise.all(subs).then(() => this.render(view_event.template, variables).then(rendered => {
       view_event.data = rendered;
       return rendered;
-    });
+    }));
+  }
+
+  render(file, variables) {
+    let template = this.templates.map(file);
+    return this.renderer.render(template, variables);
   }
 }
 

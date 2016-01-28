@@ -2,7 +2,7 @@
 
 class PluginManager {
   constructor() {
-    this.services = new Map;
+    this.instances = new Map;
     this.factories = new Map;
 
     // Defines whether or not to cache instances returned by factories.
@@ -10,10 +10,10 @@ class PluginManager {
   }
 
   register(name, instance) {
-    if (this.services.has(name)) {
+    if (this.instances.has(name)) {
       throw new Error("Service '" + name + "' is registered already");
     }
-    this.services.set(name, instance);
+    this.instances.set(name, instance);
     return this;
   }
 
@@ -26,13 +26,13 @@ class PluginManager {
   }
 
   get(name) {
-    if (this.services.has(name)) {
-      return this.services.get(name);
+    if (this.instances.has(name)) {
+      return this.instances.get(name);
     }
     if (this.factories.has(name)) {
       let instance = this.create.apply(this, arguments);
       if (this.factories.get(name).cache) {
-        this.services.set(name, instance);
+        this.instances.set(name, instance);
       }
       return instance;
     }

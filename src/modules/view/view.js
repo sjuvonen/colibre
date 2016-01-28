@@ -27,7 +27,8 @@ class TemplateMap {
 }
 
 class ViewEvent {
-  constructor(http_event) {
+  constructor(view, http_event) {
+    this.view = view;
     this.httpEvent = http_event;
   }
 
@@ -37,6 +38,10 @@ class ViewEvent {
 
   set data(data) {
     this.httpEvent.data = data;
+  }
+
+  get locals() {
+    return this.httpEvent.locals;
   }
 
   get response() {
@@ -90,7 +95,7 @@ class View {
    */
   onResponse(http_event) {
     if (http_event.data instanceof ViewData) {
-      let view_event = new ViewEvent(http_event);
+      let view_event = new ViewEvent(this, http_event);
       return this.events.emit("render", view_event);
     }
   }

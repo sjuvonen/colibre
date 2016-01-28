@@ -1,4 +1,5 @@
 /* line 1, ../scss/layout.scss */
-body {
-  background: red;
+#l-header {
+  background-color: #8B1C1C;
+  overflow-y: hidden;
 }

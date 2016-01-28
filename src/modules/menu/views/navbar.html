@@ -1,0 +1,8 @@
+<nav class="navbar navbar-dark bg-faded">
+  <ul class="nav navbar-nav">
+    {% for link in links %}
+      <li class="nav-item">
+        <a class="navlink" href="{{ link.url }}">{{ link.name }}</a></li>
+    {% endfor %}
+  </ul>
+</nav>

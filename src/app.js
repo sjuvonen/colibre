@@ -75,12 +75,20 @@ class HttpEvent {
   constructor(request, response) {
     this.request = request;
     this.response = response;
+
+    /**
+     * Storage for internal per request data.
+     */
+    this.locals = {};
   }
 
   get params() {
     return this.request.params;
   }
 
+  /**
+   * Data that will be returned as response.
+   */
   get data() {
     return this.response.data;
   }

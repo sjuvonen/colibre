@@ -5,7 +5,6 @@ let util = require("util");
 let ViewData = require("../view/view").ViewData;
 
 exports.configure = services => {
-  console.log("CONFIG");
   let theme = services.get("config").get("theme/name");
   services.get("app").baseApp.use("/themes", express.static("themes"));
   services.get("view").templates.addPath("layout", util.format("themes/%s/views/layout", theme));

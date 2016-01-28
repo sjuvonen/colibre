@@ -113,7 +113,6 @@ class App {
     this.sharedEvents.addEmitter("modules", this.modules.events);
 
     this.events.on("ready", () => {
-      console.log("READY");
       this.use(1000, event => this.onRequest(event));
       this.use(5000, event => this.onResponse(event));
     });
@@ -165,7 +164,7 @@ class App {
     return this.events.emit("bootstrap")
       .then(() => this.events.emit("ready"))
       .then(() => {
-        
+
         this.baseApp.use((req, res, next) => this.onRequestBegin(req, res, next));
 
         let config = this.config.server || {};

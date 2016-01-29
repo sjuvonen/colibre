@@ -77,14 +77,22 @@ class Route {
   }
 
   get method() {
-    return this.options.method.toUpperCase();
+    if (this.options.method) {
+      return this.options.method.toUpperCase();
+    }
+  }
+
+  get host() {
+    if (this.options.host) {
+      return this.options.host.toLowerCase();
+    }
   }
 
   matches(path, method, host) {
     if (this.method && this.method != method.toUpperCase()) {
       return false;
     }
-    if (this.host && this.host != host) {
+    if (this.host && this.host != host.toLowerCase()) {
       return false;
     };
     return this.options.regex.test(path);

@@ -6,6 +6,7 @@
   "main": "src/app",
   "dependencies": {
     "amdefine": "^1.0.0",
+    "bcrypt": "^0.8.5",
     "body-parser": "^1.13.3",
     "bower": "^1.5.3",
     "colibre-forms": "git+ssh://git@juvonet.fi:colibre/forms",

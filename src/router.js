@@ -2,7 +2,7 @@
 
 class Router {
   constructor() {
-    this.routes = new Map;
+    this.routes = [];
   }
 
   /**
@@ -15,8 +15,7 @@ class Router {
     let callback = arguments.length >= 3 ? arguments[2] : arguments[1];
     let route = (new RouteCompiler).compile(pattern);
     route.callback = callback;
-    this.routes.set(pattern, route);
-
+    this.routes.push(route);
     Object.keys(options).forEach(key => {
       route.options[key] = options[key];
     });
@@ -26,9 +25,11 @@ class Router {
    * Match request path and method to a route
    */
   match(path, method, host) {
-    for (let pair of this.routes) {
-      if (pair[1].matches(path, method)) {
-        let route = pair[1];
+    // for (let route of this.routes) {
+    for (let i = 0; i < this.routes.length; i++) {
+      let route = this.routes[i];
+      if (route.matches(path, method, host)) {
+        // let route = pair[1];
         let params = route.parse(path);
         return new RouteMatch(route, params);
       }
@@ -76,11 +77,11 @@ class Route {
   }
 
   get method() {
-    return this.options.method;
+    return this.options.method.toUpperCase();
   }
 
   matches(path, method, host) {
-    if (this.method && this.method != method) {
+    if (this.method && this.method != method.toUpperCase()) {
       return false;
     }
     if (this.host && this.host != host) {

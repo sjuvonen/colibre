@@ -1,0 +1,14 @@
+[
+  {
+    "name": "login",
+    "path": "/login",
+    "action": "user.login",
+    "method": "get"
+  },
+  {
+    "name": "login.post",
+    "path": "/login",
+    "action": "user.doLogin",
+    "method": "post"
+  }
+]

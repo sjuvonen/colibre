@@ -2,7 +2,7 @@
 
 let express = require("express");
 let util = require("util");
-let ViewData = require("../view/view").ViewData;
+let ViewData = require("../view").ViewData;
 
 exports.configure = services => {
   let theme = services.get("config").get("theme/name");

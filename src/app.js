@@ -48,6 +48,14 @@ class Request {
   get params() {
     return this._raw.params;
   }
+
+  get method() {
+    return this._raw.method;
+  }
+
+  get host() {
+    return this._raw.hostname;
+  }
 }
 
 class Response {
@@ -128,8 +136,8 @@ class App {
     this.events.on("bootstrap", () => {
       try {
         this.modules.discover(__dirname + "/modules", this.config.system.modules.enabled);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error("app.bootstrap:", error.stack);
       }
     });
 
@@ -142,6 +150,9 @@ class App {
         }, error => {
           console.error("app.exec", error.stack);
         });
+      } else {
+        console.log("NO MATCH");
+        return Promise.reject(new Error("No handler for route"));
       }
     });
   }

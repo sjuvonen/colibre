@@ -1,5 +1,6 @@
 "use strict";
 
+let passport = require("passport");
 let ViewData = require("../view").ViewData;
 
 exports.configure = services => {
@@ -7,12 +8,34 @@ exports.configure = services => {
 }
 
 exports.login = event => {
-  console.log("get login");
   return new ViewData("user/login", {
     form: this.formManager.get("user.login"),
   });
 };
 
 exports.doLogin = event => {
-  console.log("DO LOGIN");
+  return new Promise((resolve, reject) => {
+    passport.authenticate("local", (error, user, info) => {
+      if (error) {
+        return reject(new ViewData("error/500", {message: error}));
+      }
+      if (info) {
+        return reject(new ViewData("error/403"));
+      }
+      if (!user) {
+        return event.request.redirect("/user/login");
+      }
+
+      try {
+        event.request._raw.logIn(user, error => {
+          if (error) {
+            return reject(error);
+          }
+          event.response.redirect("/");
+        });
+      } catch (error) {
+        console.error(error.stack);
+      }
+    })(event.request._raw, event.response._raw);
+  });
 };

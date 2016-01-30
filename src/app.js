@@ -1,5 +1,7 @@
 "use strict";
 
+let body_parser = require("body-parser");
+let cookie_parser = require("cookie-parser");
 let express = require("express");
 let events = require("./events");
 let PriorityQueue = require("./collections").PriorityQueue;
@@ -65,6 +67,14 @@ class Response {
     this.meta.res = res;
   }
 
+  /**
+   * redirect(url)
+   * redirect(status, url)
+   */
+  redirect(status, url) {
+    this._raw.redirect.apply(this._raw, arguments);
+  }
+
   get _raw() {
     return this.meta.res;
   }
@@ -107,7 +117,7 @@ class HttpEvent {
 
 class App {
   constructor(config) {
-    this.config = config;
+    this.config = new Config(config);
     this.events = new events.AsyncEventManager;
 
     this.sharedEvents = new events.SharedEventManager(true);
@@ -115,7 +125,7 @@ class App {
     this.services = new ServiceManager;
     this.services.register("event.manager", this.sharedEvents);
     this.services.register("app", this);
-    this.services.register("config", new Config(this.config));
+    this.services.register("config", this.config);
 
     this.modules = new ModuleManager(this.services);
     this.services.register("module.manager", this.modules);
@@ -134,7 +144,7 @@ class App {
 
     this.events.on("bootstrap", () => {
       try {
-        this.modules.discover(__dirname + "/modules", this.config.system.modules.enabled);
+        this.modules.discover(__dirname + "/modules", this.config.get("system.modules.enabled"));
       } catch (error) {
         console.error("app.bootstrap:", error.stack);
       }
@@ -143,7 +153,7 @@ class App {
     this.events.on("request", event => {
       let match = this.router.match(event.request.path, event.request.method, event.request.host);
       if (match) {
-        match.callback(event).then(result => {
+        return match.callback(event).then(result => {
           event.data = result;
           return result;
         }, error => {
@@ -178,11 +188,12 @@ class App {
     }
     this.baseApp = express();
     this.baseApp.use(express.static("public"));
+    this.baseApp.use(cookie_parser());
+    this.baseApp.use(body_parser.urlencoded({extended: false}));
 
-    return this.events.emit("bootstrap")
-      .then(() => this.events.emit("ready"))
+    return this.events.emit("bootstrap", {app: this})
+      .then(() => this.events.emit("ready", {app: this}))
       .then(() => {
-
         this.baseApp.use((req, res, next) => this.onRequestBegin(req, res, next));
 
         let config = this.config.server || {};
@@ -192,7 +203,7 @@ class App {
         return new Promise((resolve, reject) => {
           this.server = this.baseApp.listen(port, address, () => {
             // this.middleware.forEach(pair => this.baseApp.use(pair[0]));
-            this.events.emit("listen", this).then(resolve);
+            this.events.emit("listen", {app: this, server: this.server}).then(resolve);
           });
         });
       }).catch(error => {

@@ -83,7 +83,9 @@ class ModuleManager {
       routes.forEach(options => {
         let action = options.action.split(".");
         let controller = module.controllers.get(action[0]);
-        router.route(options.path, options, event => cmsutil.promisify(controller[action[1]].call(controller, event)));
+        let route_options = Object.create(options);
+        route_options.name = util.format("%s.%s", module.name, options.name);
+        router.route(options.path, route_options, event => cmsutil.promisify(controller[action[1]].call(controller, event)));
       });
     } catch (error) {
       // pass

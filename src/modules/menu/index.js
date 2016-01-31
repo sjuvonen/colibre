@@ -15,6 +15,7 @@ class MenuBlock extends Block {
 
   render(view) {
     return view.render(this.style, {
+      id: this.id.replace(/\./g, "-"),
       options: this.options,
       links: this.links
     });
@@ -33,7 +34,9 @@ exports.configure = services => {
   });
 
   services.get("event.manager").on("app.request", event => {
-    let menu = blocks.create("menu", "main");
+    let menu = blocks.create("menu", "main", {
+      classes: ["navbar-dark bg-primary"]
+    });
     menu.links.push({name: "Home", url: "/"});
     event.locals.blocks.get("header").set("main_menu", menu);
   });

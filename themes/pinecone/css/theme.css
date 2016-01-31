@@ -4,6 +4,11 @@
   overflow-y: hidden;
 }
 
+/* line 6, ../scss/layout.scss */
+.bg-primary {
+  background-color: #8B1C1C !important;
+}
+
 /* line 1, ../scss/core/admin.scss */
 .admin-toolbar {
   font-size: x-small;

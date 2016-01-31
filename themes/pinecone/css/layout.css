@@ -3,3 +3,8 @@
   background-color: #8B1C1C;
   overflow-y: hidden;
 }
+
+/* line 6, ../scss/layout.scss */
+.bg-primary {
+  background-color: #8B1C1C !important;
+}

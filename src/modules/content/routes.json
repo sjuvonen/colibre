@@ -1,0 +1,12 @@
+[
+  {
+    "name": "list",
+    "path": "/admin/content",
+    "action": "content.list"
+  },
+  {
+    "name": "new",
+    "path": "/admin/content/new",
+    "action": "content.edit"
+  }
+]

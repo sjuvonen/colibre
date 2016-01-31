@@ -1,8 +1,11 @@
-<nav class="navbar {{ options.classes|join(' ')}}{% if options.fixedToTop %} navbar-fixed-top {% endif %}" id="{{ id }}">
-  <ul class="nav navbar-nav">
-    {% for link in links %}
-      <li class="nav-item">
-        <a class="nav-link" href="{{ link.url }}">{{ link.name }}</a></li>
-    {% endfor %}
-  </ul>
+<nav id="{{ id }}" class="navbar {{ options.classes|join(' ')}}{% if options.fixedToTop %} navbar-fixed-top {% endif %}">
+  <div class="container">
+    <ul class="nav navbar-nav">
+      {% for link in links %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ link.url }}">{{ link.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 </nav>

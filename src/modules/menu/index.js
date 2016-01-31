@@ -22,7 +22,7 @@ class MenuBlock extends Block {
   }
 
   get style() {
-    return this.options.style || "menu/navbar";
+    return this.options.style || "menu/nav";
   }
 }
 
@@ -35,6 +35,7 @@ exports.configure = services => {
 
   services.get("event.manager").on("app.request", event => {
     let menu = blocks.create("menu", "main", {
+      style: "menu/navbar",
       classes: ["navbar-dark bg-primary"]
     });
     menu.links.push({name: "Home", url: "/"});

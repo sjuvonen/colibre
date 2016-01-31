@@ -16,7 +16,16 @@ mongoose.model("page", PageSchema);
 exports.configure = services => {
   let blocks = services.get("block.manager");
   blocks.registerFactory("admin-content-tabs", options => {
-    return blocks.create("menu", "admin.content", options);
+    let tabs = blocks.create("menu", "admin.content", options);
+    tabs.links.push({
+      name: "List",
+      url: "/admin/content"
+    });
+    tabs.links.push({
+      name: "Create",
+      url: "/admin/content/new"
+    });
+    return tabs;
   });
 
   services.get("form.manager").registerFactory("page.edit", () => {
@@ -63,18 +72,14 @@ exports.configure = services => {
         name: "Content",
         url: "/admin/content"
       });
+    }
+  });
 
+  services.get("app").events.on("request", event => {
+    if (event.request.identity.admin && event.route.name.match(/^content\./)) {
       let tabs = blocks.create("admin-content-tabs", {
         // style: "menu/tabs"
         classes: ["nav-tabs"]
-      });
-      tabs.links.push({
-        name: "List",
-        url: "/admin/content"
-      });
-      tabs.links.push({
-        name: "Create",
-        url: "/admin/content/new"
       });
       event.locals.blocks.get("content_top").set("admin_content_tabs", tabs);
     }

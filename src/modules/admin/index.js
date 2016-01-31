@@ -4,7 +4,12 @@ exports.configure = services => {
   let blocks = services.get("block.manager");
 
   blocks.registerFactory("admin-menu", options => {
-    return blocks.create("menu", "admin", options);
+    let menu = blocks.create("menu", "admin", options);
+    menu.links.push({
+      name: "Admin",
+      url: "/admin",
+    });
+    return menu;
   });
 
   services.get("event.manager").on("app.request", event => {
@@ -13,10 +18,6 @@ exports.configure = services => {
         style: "menu/navbar",
         fixedToTop: true,
         classes: ["admin-toolbar", "navbar-dark", "bg-inverse"]
-      });
-      menu.links.push({
-        name: "Admin",
-        url: "/admin",
       });
       event.locals.blocks.get("page_top").set("admin_menu", menu);
     }

@@ -3,3 +3,19 @@
   background-color: #8B1C1C;
   overflow-y: hidden;
 }
+
+/* line 1, ../scss/core/admin.scss */
+.admin-toolbar {
+  font-size: x-small;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+/* line 7, ../scss/core/admin.scss */
+.admin-toolbar a.nav-link {
+  padding: 0.2rem;
+}
+
+/* line 12, ../scss/core/admin.scss */
+body.is-admin {
+  padding-top: 1.8rem;
+}

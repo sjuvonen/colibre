@@ -1,8 +1,8 @@
-<nav class="navbar navbar-dark bg-faded">
+<nav class="navbar {{ options.classes|join(' ')}}{% if options.fixedToTop %} navbar-fixed-top {% endif %}">
   <ul class="nav navbar-nav">
     {% for link in links %}
       <li class="nav-item">
-        <a class="navlink" href="{{ link.url }}">{{ link.name }}</a></li>
+        <a class="nav-link" href="{{ link.url }}">{{ link.name }}</a></li>
     {% endfor %}
   </ul>
 </nav>

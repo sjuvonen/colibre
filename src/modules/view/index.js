@@ -51,6 +51,10 @@ class ViewEvent {
     return this.httpEvent.locals;
   }
 
+  get request() {
+    return this.httpEvent.request;
+  }
+
   get response() {
     return this.httpEvent.response;
   }

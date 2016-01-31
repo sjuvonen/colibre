@@ -30,6 +30,7 @@ class BlockRegion extends Map {
 class BlockChain {
   constructor() {
     this.regions = new Map([
+      ["page_top", new BlockRegion(this)],
       ["header", new BlockRegion(this)],
       ["content_top", new BlockRegion(this)],
     ]);
@@ -50,8 +51,9 @@ class BlockChain {
 }
 
 class Block {
-  constructor(id) {
+  constructor(id, options) {
     this.id = id;
+    this.options = options || {};
   }
 
   render(view) {

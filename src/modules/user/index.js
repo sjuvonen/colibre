@@ -22,6 +22,10 @@ class Identity {
   get valid() {
     return this.user != null;
   }
+
+  get admin() {
+    return this.valid;
+  }
 }
 
 UserSchema.statics.findByCredentials = function(username, password) {
@@ -60,7 +64,7 @@ exports.configure = services => {
 
 
   services.get("event.manager").on("app.request", event => {
-    event.request.identity = new Identity(event.request._raw.user); 
+    event.request.identity = new Identity(event.request._raw.user);
   });
 
   services.get("event.manager").on("app.request", event => {

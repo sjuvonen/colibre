@@ -153,6 +153,7 @@ class App {
     this.events.on("request", event => {
       let match = this.router.match(event.request.path, event.request.method, event.request.host);
       if (match) {
+        event.route = match.route;
         return match.callback(event).then(result => {
           event.data = result;
           return result;

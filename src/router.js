@@ -76,6 +76,10 @@ class Route {
     this.options = options;
   }
 
+  get name() {
+    return this.options.name;
+  }
+
   get method() {
     if (this.options.method) {
       return this.options.method.toUpperCase();

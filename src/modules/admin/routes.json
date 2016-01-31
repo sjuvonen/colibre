@@ -1,0 +1,7 @@
+[
+  {
+    "name": "index",
+    "path": "/admin",
+    "action": "admin.index"
+  }
+]

@@ -8,6 +8,9 @@ let PriorityQueue = require("./collections").PriorityQueue;
 let ServiceManager = require("./service-manager").ServiceManager;
 let ModuleManager = require("./module-manager").ModuleManager;
 let Router = require("./router").Router;
+let HttpEventDecorator = require("./util").HttpEventDecorator;
+
+console.lo
 
 class Config {
   constructor(config) {
@@ -31,7 +34,6 @@ class Request {
       value: Object.create(null),
     });
     this.meta.req = req;
-    this.meta.params = null;
   }
 
   get _raw() {
@@ -52,10 +54,6 @@ class Request {
 
   get session() {
     return this._raw.session;
-  }
-
-  get params() {
-    return this._raw.params;
   }
 
   get query() {
@@ -107,10 +105,6 @@ class HttpEvent {
     this.locals = {};
   }
 
-  get params() {
-    return this.request.params;
-  }
-
   /**
    * Data that will be returned as response.
    */
@@ -120,6 +114,21 @@ class HttpEvent {
 
   set data(data) {
     this.response.data = data;
+  }
+}
+
+class RouteEvent extends HttpEventDecorator {
+  constructor(http_event, route_match) {
+    super(http_event);
+    this.routeMatch = route_match;
+  }
+
+  get params() {
+    return this.routeMatch.params;
+  }
+
+  get route() {
+    return this.routeMatch.route;
   }
 }
 

@@ -14,7 +14,7 @@
   },
   {
     "name": "edit",
-    "path": "/admin/content/:id",
+    "path": "/admin/content/:page_id",
     "action": "content.edit",
     "requirements": {
       "method": "get"
@@ -22,7 +22,7 @@
   },
   {
     "name": "edit.post",
-    "path": "/admin/content/:id",
+    "path": "/admin/content/:page_id",
     "action": "content.save",
     "requirements": {
       "method": "post"

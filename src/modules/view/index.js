@@ -2,6 +2,7 @@
 
 let util = require("util");
 let AsyncEventManager = require("../../events").AsyncEventManager;
+let HttpEventDecorator = require("../../util").HttpEventDecorator;
 
 class ViewData {
   constructor(template, variables) {
@@ -33,30 +34,10 @@ class TemplateMap {
   }
 }
 
-class ViewEvent {
-  constructor(view, http_event) {
+class ViewEvent extends HttpEventDecorator {
+  constructor(http_event, view) {
+    super(http_event);
     this.view = view;
-    this.httpEvent = http_event;
-  }
-
-  get data() {
-    return this.httpEvent.data;
-  }
-
-  set data(data) {
-    this.httpEvent.data = data;
-  }
-
-  get locals() {
-    return this.httpEvent.locals;
-  }
-
-  get request() {
-    return this.httpEvent.request;
-  }
-
-  get response() {
-    return this.httpEvent.response;
   }
 
   get variables() {
@@ -99,7 +80,7 @@ class View {
    */
   onResponse(http_event) {
     if (http_event.data instanceof ViewData) {
-      let view_event = new ViewEvent(this, http_event);
+      let view_event = new ViewEvent(http_event, this);
       return this.events.emit("render", view_event);
     }
   }

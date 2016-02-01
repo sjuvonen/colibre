@@ -9,8 +9,7 @@ let ServiceManager = require("./service-manager").ServiceManager;
 let ModuleManager = require("./module-manager").ModuleManager;
 let Router = require("./router").Router;
 let HttpEventDecorator = require("./util").HttpEventDecorator;
-
-console.lo
+let cmsutil = require("./util");
 
 class Config {
   constructor(config) {
@@ -240,8 +239,7 @@ class App {
     let next = () => {
       if (middleware.length) {
         let callback = middleware.shift()[0][0];
-        let promise = callback(event);
-        promise ? promise.then(next, error => console.error(error.stack)) : next();
+        cmsutil.promisify(callback(event)).then(next, error => console.error(error.stack));
       } else {
         done();
       }

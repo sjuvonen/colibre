@@ -154,6 +154,7 @@ class App {
     this.middleware = new PriorityQueue;
     this.router = new Router;
     this.services.register("router", this.router);
+    this.services.register("param.converter", this.router.converter);
 
     this.sharedEvents.addEmitter("app", this.events);
     this.sharedEvents.addEmitter("modules", this.modules.events);

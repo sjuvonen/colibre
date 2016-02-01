@@ -49,22 +49,6 @@ class Router {
   }
 }
 
-class ParameterConverter {
-  constructor() {
-    this.converters = new Map;
-  }
-
-  set(parameter_name, callback) {
-    this.converters.set(parameter_name, callback);
-  }
-
-  convert(params) {
-    return new Promise((resolve, reject) => {
-      resolve(params);
-    });
-  }
-}
-
 class RouteListener {
   constructor(router) {
     this.router = router;
@@ -160,6 +144,33 @@ class RouteMatch {
 
   get callback() {
     return this.route.callback;
+  }
+}
+
+class ParameterConverter {
+  constructor() {
+    this.converters = new Map;
+  }
+
+  set(parameter_name, callback) {
+    this.converters.set(parameter_name, callback);
+  }
+
+  convert(params) {
+    let promises = [];
+    Object.keys(params).forEach(key => {
+      if (this.converters.has(key)) {
+        let promise = this.converters.get(key)(params[key]);
+        promises.push(promise);
+
+        promise.then(value => {
+          return params[key] = value;
+        }, error => {
+          console.error("param.converter:", error.stack);
+        });
+      }
+    });
+    return Promise.all(promises).then(() => params);
   }
 }
 

@@ -12,8 +12,7 @@ exports.list = event => {
 };
 
 exports.edit = event => {
-  console.log("EDIT", event.request.params);
-  let form = this.forms.get("page.edit");
+  let form = this.forms.get("page.edit").setData(event.params.page);
   return new ViewData("content/edit", {
     form: form,
   });
@@ -21,11 +20,14 @@ exports.edit = event => {
 
 exports.save = event => {
   let form = this.forms.get("page.edit").setData(event.request.body)
-  this.formValidator.validate(form).then(foo => {
-    console.log("Form OK", foo);
-  }, error => {
-    console.error("Form failed", error);
-  });
+  let page = event.params.page;
+  return this.formValidator.validate(form)
+    .then(() => page.set(form.value).save())
+    .then(() => event.response.redirect("/admin/content/" + page.id))
+    .catch(error => {
+      // Should handle form validation errors, too
+      console.error("FAILED", error.stack);
+    });
 };
 
 exports.configure = services => {

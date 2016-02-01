@@ -8,13 +8,27 @@
     "name": "new",
     "path": "/admin/content/new",
     "action": "content.edit",
+    "defaults": {
+      "page": null
+    },
     "requirements": {
       "method": "get"
     }
   },
   {
+    "name": "new",
+    "path": "/admin/content/new",
+    "action": "content.save",
+    "defaults": {
+      "page": null
+    },
+    "requirements": {
+      "method": "post"
+    }
+  },
+  {
     "name": "edit",
-    "path": "/admin/content/:page_id",
+    "path": "/admin/content/:page",
     "action": "content.edit",
     "requirements": {
       "method": "get"
@@ -22,7 +36,7 @@
   },
   {
     "name": "edit.post",
-    "path": "/admin/content/:page_id",
+    "path": "/admin/content/:page",
     "action": "content.save",
     "requirements": {
       "method": "post"

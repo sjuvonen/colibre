@@ -76,20 +76,16 @@ class ModuleManager {
       }
     });
 
-    try {
-      let router = this.services.get("router");
-      let routes = module.config.get("routes");
+    let router = this.services.get("router");
+    let routes = module.config.get("routes") || [];
 
-      routes.forEach(options => {
-        let action = options.action.split(".");
-        let controller = module.controllers.get(action[0]);
-        let route_options = Object.create(options);
-        route_options.name = util.format("%s.%s", module.name, options.name);
-        router.route(options.path, route_options, event => cmsutil.promisify(controller[action[1]].call(controller, event)));
-      });
-    } catch (error) {
-      // pass
-    }
+    routes.forEach(options => {
+      let action = options.action.split(".");
+      let controller = module.controllers.get(action[0]);
+      let route_options = cmsutil.copy(options);
+      route_options.name = util.format("%s.%s", module.name, options.name);
+      router.route(options.path, route_options, event => cmsutil.promisify(controller[action[1]].call(controller, event)));
+    });
   }
 }
 

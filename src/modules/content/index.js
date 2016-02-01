@@ -76,12 +76,20 @@ exports.configure = services => {
   });
 
   services.get("app").events.on("route", event => {
-    if (event.request.identity.admin && event.route.name.match(/^content\./)) {
-      let tabs = blocks.create("admin-content-tabs", {
-        // style: "menu/tabs"
-        classes: ["nav-tabs"]
-      });
-      event.locals.blocks.get("content_top").set("admin_content_tabs", tabs);
+    if (event.request.identity.admin) {
+      if (event.route.name.match(/^content\./)) {
+        let tabs = blocks.create("admin-content-tabs", {
+          // style: "menu/tabs"
+          classes: ["nav-tabs"]
+        });
+        event.locals.blocks.get("content_top").set("admin_content_tabs", tabs);
+      }
+      if (event.route.name == "content.edit") {
+        event.locals.blocks.getBlock("admin_content_tabs").links.push({
+          name: "Edit",
+          url: "/admin/content/" + event.params.page.id
+        });
+      }
     }
   });
 };

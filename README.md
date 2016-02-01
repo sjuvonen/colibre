@@ -6,11 +6,16 @@ rather just to run the author's own website. But open sourcing code is always ni
 ## Components
 Main components used are as follows
 - Node.js
+- Express
 - MongoDB
 - Mongoose
 - Passport
 - Twig.js
 - Bootstrap 4
+
+###
+Colibre is loosely based on Express.js, i.e. it uses Express as the engine but re-implements and
+overrides some of the core components. 
 
 ## Requirements
 The app is designed to be ran on latest components. Node.js (>= 5.0.0) must be executed with

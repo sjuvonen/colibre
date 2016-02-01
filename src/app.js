@@ -38,6 +38,14 @@ class Request {
     return this.meta.req;
   }
 
+  get method() {
+    return this._raw.method;
+  }
+
+  get host() {
+    return this._raw.hostname;
+  }
+
   get path() {
     return this._raw.path;
   }
@@ -50,12 +58,12 @@ class Request {
     return this._raw.params;
   }
 
-  get method() {
-    return this._raw.method;
+  get query() {
+    return this._raw.query;
   }
 
-  get host() {
-    return this._raw.hostname;
+  get body() {
+    return this._raw.body;
   }
 }
 

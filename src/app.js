@@ -183,16 +183,12 @@ class App {
     });
 
     this.events.on("route", event => {
-      try {
-        return event.routeMatch.callback(event).then(result => {
-          event.data = result;
-          return result;
-        }, error => {
-          console.error("app.exec", error.stack);
-        });
-      } catch (error) {
-        console.error(error.stack);
-      }
+      return event.routeMatch.callback(event).then(result => {
+        event.data = result;
+        return result;
+      }, error => {
+        console.error("app.exec", error.stack);
+      });
     });
   }
 

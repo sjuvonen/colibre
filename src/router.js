@@ -3,6 +3,7 @@
 class Router {
   constructor() {
     this.routes = [];
+    this.converter = new ParameterConverter;
   }
 
   /**
@@ -22,6 +23,13 @@ class Router {
   }
 
   /**
+   * Install converter for named parameter.
+   */
+  param(name, callback) {
+    this.converter.set(name, callback);
+  }
+
+  /**
    * Match request path and method to a route
    */
   match(path, method, host) {
@@ -31,9 +39,29 @@ class Router {
       if (route.matches(path, method, host)) {
         // let route = pair[1];
         let params = route.parse(path);
-        return new RouteMatch(route, params);
+
+        return this.converter.convert(params).then(converted => {
+          return new RouteMatch(route, converted);
+        });
       }
     }
+    return Promise.reject(new Error("No match"));
+  }
+}
+
+class ParameterConverter {
+  constructor() {
+    this.converters = new Map;
+  }
+
+  set(parameter_name, callback) {
+    this.converters.set(parameter_name, callback);
+  }
+
+  convert(params) {
+    return new Promise((resolve, reject) => {
+      resolve(params);
+    });
   }
 }
 
@@ -112,7 +140,6 @@ class Route {
       let defaults = this.options.defaults || {};
       let params = {}
       Object.keys(defaults).forEach(key => {
-        console.log(">", key, defaults[key]);
         params[key] = defaults[key];
       });
       this.options.keys.forEach((key, i) => {

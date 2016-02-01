@@ -172,14 +172,13 @@ class App {
     });
 
     this.events.on("request", event => {
-      let match = this.router.match(event.request.path, event.request.method, event.request.host);
-      if (match) {
+      return this.router.match(event.request.path, event.request.method, event.request.host).then(match => {
         let route_event = new RouteEvent(event, match);
         return this.events.emit("route", route_event).catch(error => console.error(error.stack));
-      } else {
+      }, error => {
         console.log("NO MATCH");
         return Promise.reject(new Error("No handler for route"));
-      }
+      });
     });
 
     this.events.on("route", event => {

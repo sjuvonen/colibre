@@ -17,3 +17,13 @@ exports.fromConnect = middleware => {
 };
 
 exports.promisify = value => value instanceof Promise ? value : Promise.accept(value);
+
+exports.copy = object => {
+  let copy = Object.create(object.prototype || null);
+  Object.keys(object).forEach(key => {
+    if (object.hasOwnProperty(key)) {
+      copy[key] = object[key];
+    }
+  });
+  return copy;
+};

@@ -123,6 +123,10 @@ class RouteEvent extends HttpEventDecorator {
     this.routeMatch = route_match;
   }
 
+  get path() {
+    return this.routeMatch.route.path;
+  }
+
   get params() {
     return this.routeMatch.params;
   }
@@ -170,16 +174,24 @@ class App {
     this.events.on("request", event => {
       let match = this.router.match(event.request.path, event.request.method, event.request.host);
       if (match) {
-        event.route = match.route;
-        return match.callback(event).then(result => {
+        let route_event = new RouteEvent(event, match);
+        return this.events.emit("route", route_event).catch(error => console.error(error.stack));
+      } else {
+        console.log("NO MATCH");
+        return Promise.reject(new Error("No handler for route"));
+      }
+    });
+
+    this.events.on("route", event => {
+      try {
+        return event.routeMatch.callback(event).then(result => {
           event.data = result;
           return result;
         }, error => {
           console.error("app.exec", error.stack);
         });
-      } else {
-        console.log("NO MATCH");
-        return Promise.reject(new Error("No handler for route"));
+      } catch (error) {
+        console.error(error.stack);
       }
     });
   }

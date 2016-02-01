@@ -75,7 +75,7 @@ exports.configure = services => {
     }
   });
 
-  services.get("app").events.on("request", event => {
+  services.get("app").events.on("route", event => {
     if (event.request.identity.admin && event.route.name.match(/^content\./)) {
       let tabs = blocks.create("admin-content-tabs", {
         // style: "menu/tabs"

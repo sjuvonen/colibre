@@ -18,4 +18,4 @@ the --harmony flag to enable some experimental ES6 features.
 
 ## Notes
 Colibre modules' dependencies aren't tracked in any specific way as of now. Basically they are loaded
-in the config.json.dist in the order which prevents dependency issues.
+in the config.json.dist in the order which avoids dependency issues.

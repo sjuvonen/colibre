@@ -7,6 +7,25 @@
   {
     "name": "new",
     "path": "/admin/content/new",
-    "action": "content.edit"
+    "action": "content.edit",
+    "requirements": {
+      "method": "get"
+    }
+  },
+  {
+    "name": "edit",
+    "path": "/admin/content/:id",
+    "action": "content.edit",
+    "requirements": {
+      "method": "get"
+    }
+  },
+  {
+    "name": "edit.post",
+    "path": "/admin/content/:id",
+    "action": "content.save",
+    "requirements": {
+      "method": "post"
+    }
   }
 ]

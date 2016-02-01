@@ -76,19 +76,23 @@ class Route {
     this.options = options;
   }
 
+  get requirements() {
+    return this.options.requirements || {};
+  }
+
   get name() {
     return this.options.name;
   }
 
   get method() {
-    if (this.options.method) {
-      return this.options.method.toUpperCase();
+    if (this.requirements.method) {
+      return this.requirements.method.toUpperCase();
     }
   }
 
   get host() {
-    if (this.options.host) {
-      return this.options.host.toLowerCase();
+    if (this.requirements.host) {
+      return this.requirements.host.toLowerCase();
     }
   }
 

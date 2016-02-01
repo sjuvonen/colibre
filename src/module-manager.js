@@ -5,8 +5,6 @@ let util = require("util");
 let EventManager = require("./events").EventManager;
 let cmsutil = require("./util");
 
-let Controller = require("./controller").Controller;
-
 class ModuleManager {
   constructor(services) {
     this.services = services;
@@ -62,11 +60,7 @@ class ModuleManager {
     module.main.configure(this.services);
     module.factories.forEach((factory, name) => {
       console.log(util.format("configure %s.%s", module.name, name));
-      // console.log(typeof factory, factory instanceof Controller, factory);
-      if (Controller.prototype.isPrototypeOf(factory.prototype)) {
-        let controller = "create" in factory ? factory.create(this.services) : new factory;
-        module.controllers.set(name, controller);
-      } else if (typeof factory == "function") {
+      if (typeof factory == "function") {
         module.controllers.set(name, factory(this.services));
       } else {
         if (factory.hasOwnProperty("configure")) {

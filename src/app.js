@@ -222,19 +222,15 @@ class App {
       .then(() => {
         this.baseApp.use((req, res, next) => this.onRequestBegin(req, res, next));
 
-        let config = this.config.server || {};
-        let port = config.port || 8000;
-        let address = config.address || "localhost";
+        let address = this.config.get("server.address", "localhost");
+        let port = this.config.get("server.port", 8000);
 
         return new Promise((resolve, reject) => {
           this.server = this.baseApp.listen(port, address, () => {
-            // this.middleware.forEach(pair => this.baseApp.use(pair[0]));
             this.events.emit("listen", {app: this, server: this.server}).then(resolve);
           });
         });
-      }).catch(error => {
-        console.error("app.start", error.stack);
-      });
+      }).catch(error => console.error("app.start", error.stack));
     return this;
   }
 
@@ -245,7 +241,7 @@ class App {
       if (middleware.length) {
         let callback = middleware.shift()[0][0];
         let promise = callback(event);
-        promise ? promise.then(next) : next();
+        promise ? promise.then(next, error => console.error(error.stack)) : next();
       } else {
         done();
       }

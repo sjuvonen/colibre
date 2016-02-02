@@ -85,7 +85,7 @@ class RouteCompiler {
 class Route {
   constructor(path, options) {
     this.path = path;
-    this.options = options;
+    this.options = options || {};
   }
 
   get requirements() {
@@ -176,3 +176,5 @@ class ParameterConverter {
 
 exports.RouteListener = RouteListener;
 exports.Router = Router;
+exports.Route = Route;
+exports.RouteMatch = RouteMatch;

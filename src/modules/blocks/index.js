@@ -71,21 +71,23 @@ exports.configure = services => {
   services.get("event.manager").on("view.render", event => {
     let promises = [];
     let cache = new Map;
-
-    event.locals.blocks.forEach((blocks, region) => {
-      cache.set(region, []);
-      blocks.forEach((block, key) => {
-        promises.push(cmsutil.promisify(block.render(event.view)).then(rendered => {
-          cache.get(region).push(rendered);
-        }));
+    return new Promise((resolve, reject) => {
+      event.locals.blocks.forEach((blocks, region) => {
+        cache.set(region, []);
+        blocks.forEach((block, key) => {
+          promises.push(cmsutil.promisify(block.render(event.view)).then(rendered => {
+            cache.get(region).push(rendered);
+          }));
+        });
       });
-    });
 
-    return Promise.all(promises).then(() => {
-      event.data.variables.blocks = {};
-      cache.forEach((blocks, region) => {
-        event.data.variables.blocks[region] = blocks.join("\n");
-      })
+      return Promise.all(promises).then(() => {
+        event.data.variables.blocks = {};
+        cache.forEach((blocks, region) => {
+          event.data.variables.blocks[region] = blocks.join("\n");
+        });
+        resolve();
+      });
     });
   });
 };

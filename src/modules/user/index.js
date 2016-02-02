@@ -9,7 +9,10 @@ let UserSchema = new mongoose.Schema({
   username: String,
   password: String,
   meta: {
-    created: Date,
+    created: {
+      type: Date,
+      default: Date.now
+    },
     login: Date,
   }
 });

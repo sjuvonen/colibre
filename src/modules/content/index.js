@@ -6,7 +6,10 @@ let PageSchema = new mongoose.Schema({
   title: String,
   body: String,
   meta: {
-    created: Date,
+    created: {
+      type: Date,
+      default: Date.now
+    },
     modified: Date,
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -92,7 +95,7 @@ exports.configure = services => {
         event.locals.blocks.getBlock("admin_content_tabs").links.push({
           name: "Edit",
           route: "content.edit",
-          params: {id: event.params.page.id}
+          params: {page: event.params.page.id}
         });
       }
     }

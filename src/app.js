@@ -251,7 +251,7 @@ class App {
     let next = () => {
       if (middleware.length) {
         let callback = middleware.shift()[0][0];
-        cmsutil.promisify(callback(event)).then(next, error => console.error(error.stack));
+        cmsutil.promisify(callback(event)).then(next, error => console.error("app.onRequestBegin:", error.stack));
       } else {
         done();
       }

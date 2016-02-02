@@ -8,6 +8,10 @@ let PageSchema = new mongoose.Schema({
   meta: {
     created: Date,
     modified: Date,
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user"
+    }
   }
 });
 
@@ -67,7 +71,7 @@ exports.configure = services => {
   });
 
   services.get("event.manager").on("app.request", event => {
-    if (event.request.identity.admin) {
+    if (event.identity.admin) {
       event.locals.blocks.getBlock("admin_menu").links.push({
         name: "Content",
         route: "content.list"
@@ -76,7 +80,7 @@ exports.configure = services => {
   });
 
   services.get("app").events.on("route", event => {
-    if (event.request.identity.admin) {
+    if (event.identity.admin) {
       if (event.route.name.match(/^content\./)) {
         let tabs = blocks.create("admin-content-tabs", {
           // style: "menu/tabs"

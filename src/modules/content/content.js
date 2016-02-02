@@ -6,7 +6,14 @@ let ViewData = require("../view").ViewData;
 exports.list = event => {
   return mongoose.model("page").find().then(pages => {
     return new ViewData("content/list", {
-      items: pages
+      items: pages,
+      table: {
+        "colums": [
+          {label: "Title"},
+          {label: "Owner", path: "meta.owner"},
+          {label: "Modified"}
+        ]
+      }
     });
   });
 };

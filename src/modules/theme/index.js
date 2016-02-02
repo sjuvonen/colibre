@@ -11,7 +11,7 @@ exports.configure = services => {
   services.get("event.manager").on("view.render", event => {
     if (event.data instanceof ViewData) {
       event.data = new ViewData("layout", {
-        request: event.request,
+        identity: event.identity,
         content: event.data,
       });
     }

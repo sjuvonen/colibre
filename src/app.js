@@ -115,6 +115,13 @@ class HttpEvent {
   set data(data) {
     this.response.data = data;
   }
+
+  /**
+   * NOTE: Identity is populated by user module.
+   */
+  get identity() {
+    return this.locals.identity;
+  }
 }
 
 class RouteEvent extends HttpEventDecorator {

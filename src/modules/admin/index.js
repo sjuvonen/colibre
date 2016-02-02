@@ -13,7 +13,7 @@ exports.configure = services => {
   });
 
   services.get("event.manager").on("app.request", event => {
-    if (event.request.identity.admin) {
+    if (event.identity.admin) {
       let menu = blocks.create("admin-menu", {
         style: "menu/navbar",
         fixedToTop: true,

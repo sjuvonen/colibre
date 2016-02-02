@@ -64,13 +64,13 @@ exports.configure = services => {
 
 
   services.get("event.manager").on("app.request", event => {
-    event.request.identity = new Identity(event.request._raw.user);
+    event.locals.identity = new Identity(event.request._raw.user);
   });
 
   services.get("event.manager").on("app.request", event => {
     let menu = event.locals.blocks.getBlock("main_menu");
 
-    if (event.request.identity.valid) {
+    if (event.identity.valid) {
       menu.links.push({
         name: "Profile",
         url: "/user"

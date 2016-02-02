@@ -20,6 +20,10 @@ class HttpEventDecorator {
     return this.httpEvent.locals;
   }
 
+  get identity() {
+    return this.httpEvent.identity;
+  }
+
   get data() {
     return this.response.data;
   }

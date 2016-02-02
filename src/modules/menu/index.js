@@ -15,16 +15,15 @@ class MenuBlock extends Block {
   }
 
   render(view) {
-    let links = this.links.map(link => {
-      if (!link.url) {
-        link.url = this.urlBuilder.fromRoute(link.route, link.params);
-      }
-      return link;
-    });
     return view.render(this.style, {
       id: this.id.replace(/\./g, "-"),
       options: this.options,
-      links: links
+      links: this.links.map(link => {
+        if (!link.url) {
+          link.url = this.urlBuilder.fromRoute(link.route, link.params);
+        }
+        return link;
+      })
     });
   }
 

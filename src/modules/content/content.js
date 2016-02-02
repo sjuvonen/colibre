@@ -9,9 +9,9 @@ exports.list = event => {
       items: pages,
       table: new ViewData("core/table", {
         columns: [
-          {key: "title", label: "Title"},
-          {key: "owner", label: "Owner"},
-          {key: "modified", label: "Modified"},
+          // {key: "title", label: "Title"},
+          // {key: "owner", label: "Owner"},
+          {key: "meta.modified", label: "Modified", transform: date => "FOOBAR"},
         ],
         data: pages
       })

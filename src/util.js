@@ -68,3 +68,12 @@ exports.copy = object => {
   });
   return copy;
 };
+
+exports.get = (data, path, default_value) => {
+  let parts = path.split(".");
+  let last = parts.pop();
+  parts.forEach(key => {
+    data = data[key] || {};
+  });
+  return typeof data[last] == "undefined" ? default_value : data[last];
+}

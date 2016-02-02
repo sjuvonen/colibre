@@ -1,1 +1,24 @@
-<p>TABLE</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      {% for column in columns %}
+        <th>{{ column.label }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+      <tr>
+        {% for column in columns %}
+          {% set value = get(row, column.key) %}
+          {% if column.transform %}
+            <td>{{ column.transform(value) }}</td>
+          {% else %}
+            <td>{{ value }}</td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

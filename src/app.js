@@ -18,13 +18,7 @@ class Config {
   }
 
   get(key, default_value) {
-    let parts = key.split(".");
-    let last = parts.pop();
-    let root = this.config;
-    parts.forEach(key => {
-      root = root[key] || {};
-    });
-    return root[last];
+    return cmsutil.get(this.config, key, default_value);
   }
 }
 

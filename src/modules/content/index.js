@@ -5,16 +5,20 @@ let mongoose = require("mongoose");
 let PageSchema = new mongoose.Schema({
   title: String,
   body: String,
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user"
+  },
   meta: {
+    state: {
+      type: Number,
+      default: 0
+    },
     created: {
       type: Date,
       default: Date.now
     },
     modified: Date,
-    owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user"
-    }
   }
 });
 

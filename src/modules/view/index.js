@@ -1,5 +1,6 @@
 "use strict";
 
+let fs = require("fs");
 let util = require("util");
 let AsyncEventManager = require("../../events").AsyncEventManager;
 let HttpEventDecorator = require("../../util").HttpEventDecorator;
@@ -87,24 +88,24 @@ class View {
 
   onRender(view_event) {
     let variables = view_event.variables;
+    return this.render(view_event.template, view_event.variables).then(rendered => {
+      view_event.data = rendered;
+    });
+  }
+
+  render(file, variables) {
+    let template = this.templates.map(file);
     let subs = Object.keys(variables).map(key => {
       let value = variables[key];
       if (value instanceof ViewData) {
         return this.render(value.template, value.variables).then(result => {
           variables[key] = result;
+        }, error => {
+          console.log("view.onRender", error.stack);
         });
       }
     });
-
-    return Promise.all(subs).then(() => this.render(view_event.template, variables).then(rendered => {
-      view_event.data = rendered;
-      return rendered;
-    }));
-  }
-
-  render(file, variables) {
-    let template = this.templates.map(file);
-    return this.renderer.render(template, variables);
+    return Promise.all(subs).then(() => this.renderer.render(template, variables));
   }
 }
 
@@ -123,4 +124,6 @@ exports.configure = services => {
   events.on("modules.load", module => {
     view.templates.addPath(module.name, module.path + "/views");
   });
+
+  view.templates.addPath("core", __dirname + "/../../../views");
 };

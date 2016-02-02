@@ -7,13 +7,20 @@ exports.list = event => {
   return mongoose.model("page").find().then(pages => {
     return new ViewData("content/list", {
       items: pages,
+      table: new ViewData("core/table", {
+        columns: [
+          {key: "title", label: "Title"},
+          {key: "owner", label: "Owner"},
+          {key: "modified", label: "Modified"},
+        ],
+        data: pages
+      })
     });
   });
 };
 
 exports.edit = event => {
   let form = this.forms.get("page.edit").setData(event.params.page);
-    console.log("EDIT PAGE");
   return new ViewData("content/edit", {
     form: form,
   });
@@ -22,9 +29,12 @@ exports.edit = event => {
 exports.save = event => {
   let form = this.forms.get("page.edit").setData(event.request.body)
   let page = event.params.page;
+  if (!page.owner) {
+    page.owner = event.identity.user;
+  }
   return this.formValidator.validate(form)
-    .then(() => page.set(form.value).save())
-    .then(() => event.response.redirect(this.urlBuilder.fromRoute("content.edit", {id: page.id})))
+    .then(() => page.set(form.value).set("meta.modified", Date.now()).save())
+    .then(() => event.response.redirect(this.urlBuilder.fromRoute("content.edit", {page: page.id})))
     .catch(error => {
       // Should handle form validation errors, too
       console.error("FAILED", error.stack);

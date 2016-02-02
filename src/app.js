@@ -10,6 +10,7 @@ let ModuleManager = require("./module-manager").ModuleManager;
 let Router = require("./router").Router;
 let HttpEventDecorator = require("./util").HttpEventDecorator;
 let cmsutil = require("./util");
+let UrlBuilder = require("./url").UrlBuilder;
 
 class Config {
   constructor(config) {
@@ -157,6 +158,10 @@ class App {
 
     this.sharedEvents.addEmitter("app", this.events);
     this.sharedEvents.addEmitter("modules", this.modules.events);
+
+    this.services.registerFactory("url.builder", () => {
+      return new UrlBuilder(this.router.routes);
+    });
 
     this.events.on("ready", () => {
       this.use(1000, event => this.onRequest(event));

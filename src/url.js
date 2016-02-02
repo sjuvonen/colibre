@@ -27,7 +27,6 @@ class UrlBuilder {
       }
 
       if (!(param in params) && !optional) {
-        console.error(params);
         throw new Error("Missing parameter '" + param + "'");
       }
 

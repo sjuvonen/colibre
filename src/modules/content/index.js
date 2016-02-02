@@ -19,11 +19,11 @@ exports.configure = services => {
     let tabs = blocks.create("menu", "admin.content", options);
     tabs.links.push({
       name: "List",
-      url: "/admin/content"
+      route: "content.list"
     });
     tabs.links.push({
       name: "Create",
-      url: "/admin/content/new"
+      route: "content.new"
     });
     return tabs;
   });
@@ -70,7 +70,7 @@ exports.configure = services => {
     if (event.request.identity.admin) {
       event.locals.blocks.getBlock("admin_menu").links.push({
         name: "Content",
-        url: "/admin/content"
+        route: "content.list"
       });
     }
   });
@@ -87,7 +87,8 @@ exports.configure = services => {
       if (event.route.name == "content.edit") {
         event.locals.blocks.getBlock("admin_content_tabs").links.push({
           name: "Edit",
-          url: "/admin/content/" + event.params.page.id
+          route: "content.edit",
+          params: {id: event.params.page.id}
         });
       }
     }

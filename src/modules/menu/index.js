@@ -4,8 +4,9 @@ let util = require("util");
 let Block = require("../blocks").Block;
 
 class MenuBlock extends Block {
-  constructor(id, options) {
+  constructor(url_builder, id, options) {
     super("menu." + id, options);
+    this.urlBuilder = url_builder;
     this.links = [];
 
     if (!this.options.classes) {
@@ -14,10 +15,16 @@ class MenuBlock extends Block {
   }
 
   render(view) {
+    let links = this.links.map(link => {
+      if (!link.url) {
+        link.url = this.urlBuilder.fromRoute(link.route, link.params);
+      }
+      return link;
+    });
     return view.render(this.style, {
       id: this.id.replace(/\./g, "-"),
       options: this.options,
-      links: this.links
+      links: links
     });
   }
 
@@ -30,7 +37,7 @@ exports.configure = services => {
   let blocks = services.get("block.manager");
 
   blocks.registerFactory("menu", (id, options) => {
-    return new MenuBlock(id, options);
+    return new MenuBlock(services.get("url.builder"), id, options);
   });
 
   services.get("event.manager").on("app.request", event => {

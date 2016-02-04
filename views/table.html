@@ -11,12 +11,7 @@
     {% for row in data %}
       <tr>
         {% for column in columns %}
-          {% set value = get(row, column.key) %}
-          {% if column.transform %}
-            <td>{{ column.transform(value) }}</td>
-          {% else %}
-            <td>{{ value }}</td>
-          {% endif %}
+          <td>{{ get(row, column.key)|transform(column.filter) }}</td>
         {% endfor %}
       </tr>
     {% endfor %}

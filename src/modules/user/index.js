@@ -4,10 +4,12 @@ let bcrypt = require("bcrypt");
 let mongoose = require("mongoose");
 let passport = require("passport");
 let LocalStrategy = require("passport-local").Strategy;
+let ViewData = require("../view").ViewData;
 
 let UserSchema = new mongoose.Schema({
   username: String,
   password: String,
+  email: String,
   meta: {
     created: {
       type: Date,
@@ -47,10 +49,40 @@ UserSchema.statics.verifyPassword = function(hash, password) {
   });
 };
 
+class LoginManager {
+  constructor(passport, url_builder) {
+    this.method = "local";
+    this.passport = passport;
+    this.urlBuilder = url_builder;
+  }
+
+  login(request, response) {
+    return new Promise((resolve, reject) => {
+      this.passport.authenticate(this.method, (error, user, info) => {
+        if (error) {
+          return reject(new ViewData("error/500", {message: error}));
+        }
+        if (info) {
+          return reject(new ViewData("error/403"));
+        }
+        if (!user) {
+          return request.redirect(this.urlBuilder.fromRoute("user.login"));
+        }
+        request._raw.logIn(user, error => {
+          error ? reject(error) : resolve(user);
+        });
+      })(request._raw, response._raw);
+    });
+  }
+}
+
 mongoose.model("user", UserSchema);
 
 passport.use(new LocalStrategy((username, password, done) => {
-  mongoose.model("user").findByCredentials(username, password).then(user => done(null, user), error => done(error));
+  mongoose.model("user").findByCredentials(username, password).then(
+    user => done(null, user),
+    error => done(error)
+  );
 }));
 
 passport.serializeUser((user, done) => {
@@ -60,6 +92,8 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => mongoose.model("user").findById(id).then(user => done(null, user)));
 
 exports.configure = services => {
+  services.register("login.manager", new LoginManager(passport, services.get("url.builder")));
+
   services.get("event.manager").on("app.ready", event => {
     event.app.baseApp.use(passport.initialize());
     event.app.baseApp.use(passport.session());
@@ -104,10 +138,10 @@ exports.configure = services => {
       }
     },
     {
-      name: "submit",
-      type: "button",
+      name: "actions",
+      type: "actions",
       options: {
-        label: "Login"
+        submit: true,
       }
     }
   ]));

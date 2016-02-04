@@ -1,22 +1,32 @@
 "use strict";
 
 let mongoose = require("mongoose");
+let dateutil = require("../../util/date");
 let ViewData = require("../view").ViewData;
+
+function * filter_iterator(rows) {
+  for (let i = 0; i < rows.length; i++) {
+    yield row;
+  }
+}
 
 exports.list = event => {
   return mongoose.model("page").find().then(pages => {
-    return new ViewData("content/list", {
-      items: pages,
-      table: new ViewData("core/table", {
-        columns: [
-          // {key: "title", label: "Title"},
-          // {key: "owner", label: "Owner"},
-          {key: "meta.modified", label: "Modified", transform: date => "FOOBAR"},
-        ],
-        data: pages
-      })
+      return mongoose.model("user")
+        .find(pages.map(page => page.owner))
+        .then(users => new Map(users.map(u => [u.id, u])))
+        .then(ucache => new ViewData("content/list", {
+          items: pages,
+          table: new ViewData("core/table", {
+            columns: [
+              {key: "title", label: "Title"},
+              {key: "owner", label: "Owner"},
+              {key: "meta.modified", label: "Modified", filter: "mtime"},
+            ],
+            data: pages
+          })
+        }));
     });
-  });
 };
 
 exports.edit = event => {

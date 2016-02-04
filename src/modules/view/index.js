@@ -61,9 +61,15 @@ class TwigRenderer {
 
   render(file, variables) {
     return new Promise((resolve, reject) => {
-      this.twig.renderFile(file, variables, (error, data) => {
-        error ? reject(error) : resolve(data);
-      });
+      try {
+        // NOTE: Twig crashes without these two variables!
+        variables.views = "";
+        variables.settings = {};
+        
+        this.twig.renderFile(file, variables, (error, data) => {
+          error ? reject(error) : resolve(data);
+        });
+    } catch (error) { console.error(error.stack)}
     });
   }
 }

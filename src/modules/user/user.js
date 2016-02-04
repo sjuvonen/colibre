@@ -5,6 +5,8 @@ let ViewData = require("../view").ViewData;
 
 exports.configure = services => {
   this.formManager = services.get("form.manager");
+  this.urlBuilder = services.get("url.builder");
+  this.loginManager = services.get("login.manager");
 }
 
 exports.login = event => {
@@ -15,27 +17,9 @@ exports.login = event => {
 
 exports.doLogin = event => {
   return new Promise((resolve, reject) => {
-    passport.authenticate("local", (error, user, info) => {
-      if (error) {
-        return reject(new ViewData("error/500", {message: error}));
-      }
-      if (info) {
-        return reject(new ViewData("error/403"));
-      }
-      if (!user) {
-        return event.request.redirect("/user/login");
-      }
-
-      try {
-        event.request._raw.logIn(user, error => {
-          if (error) {
-            return reject(error);
-          }
-          event.response.redirect("/");
-        });
-      } catch (error) {
-        console.error(error.stack);
-      }
-    })(event.request._raw, event.response._raw);
+    this.loginManager.login(event.request, event.response).then(
+      user => event.response.redirect(this.urlBuilder.fromRoute("admin.index")),
+      error => console.error(error.stack)
+    );
   });
 };

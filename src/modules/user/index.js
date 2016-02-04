@@ -31,6 +31,12 @@ class Identity {
   get admin() {
     return this.valid;
   }
+
+  get username() {
+    if (this.valid) {
+      return this.user.username;
+    }
+  }
 }
 
 UserSchema.statics.findByCredentials = function(username, password) {
@@ -110,12 +116,12 @@ exports.configure = services => {
     if (event.identity.valid) {
       menu.links.push({
         name: "Profile",
-        url: "/user"
+        route: "user.account"
       });
     } else {
       menu.links.push({
         name: "Login",
-        url: "/login"
+        route: "user.login"
       });
     }
   });

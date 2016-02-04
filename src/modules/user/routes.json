@@ -14,5 +14,10 @@
     "requirements": {
       "method": "post"
     }
+  },
+  {
+    "name": "account",
+    "path": "/account",
+    "action": "user.account"
   }
 ]

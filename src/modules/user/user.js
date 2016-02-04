@@ -23,3 +23,9 @@ exports.doLogin = event => {
     );
   });
 };
+
+exports.account = event => {
+  return new ViewData("user/account", {
+    identity: event.identity
+  });
+};

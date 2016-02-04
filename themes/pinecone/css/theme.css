@@ -24,3 +24,14 @@
 body.is-admin {
   padding-top: 1.8rem;
 }
+
+/* line 1, ../scss/modules/single-login.scss */
+.single-login-services > .card {
+  width: 17rem;
+  display: inline-block;
+  vertical-align: top;
+}
+/* line 6, ../scss/modules/single-login.scss */
+.single-login-services > .card .card-text {
+  min-height: 5rem;
+}

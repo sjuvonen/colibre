@@ -1,6 +1,7 @@
 "use strict";
 
 let mongoose = require("mongoose");
+let util = require("util");
 let dateutil = require("../../util/date");
 let ViewData = require("../view").ViewData;
 
@@ -19,7 +20,14 @@ exports.list = event => {
         items: pages,
         table: new ViewData("core/table", {
           columns: [
-            {key: "title", label: "Title"},
+            {
+              key: "title",
+              label: "Title",
+              filter: (title, page) => {
+                let url = this.urlBuilder.fromRoute("content.edit", {page: page.id});
+                return util.format('<a href="%s">%s</a>', url, title);
+              }
+            },
             {key: "owner", label: "Owner", filter: uid => ucache.get(uid.toString()).username},
             {key: "meta.modified", label: "Modified", filter: date => dateutil.mtime(date)},
           ],

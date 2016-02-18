@@ -13,7 +13,7 @@
         {% for column in columns %}
           <td>
             {% if exists("filter", column) %}
-              {{ column.filter(get(row, column.key)) }}
+              {{ column.filter(get(row, column.key), row) }}
             {% else %}
               {{ get(row, column.key) }}
             {% endif %}

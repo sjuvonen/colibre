@@ -16,7 +16,7 @@
     }
   },
   {
-    "name": "new",
+    "name": "new.post",
     "path": "/admin/content/new",
     "action": "content.save",
     "defaults": {

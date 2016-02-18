@@ -12,21 +12,21 @@ function * filter_iterator(rows) {
 
 exports.list = event => {
   return mongoose.model("page").find().then(pages => {
-      return mongoose.model("user")
-        .find(pages.map(page => page.owner))
-        .then(users => new Map(users.map(u => [u.id, u])))
-        .then(ucache => new ViewData("content/list", {
-          items: pages,
-          table: new ViewData("core/table", {
-            columns: [
-              {key: "title", label: "Title"},
-              {key: "owner", label: "Owner"},
-              {key: "meta.modified", label: "Modified", filter: "mtime"},
-            ],
-            data: pages
-          })
-        }));
-    });
+    return mongoose.model("user")
+      .find(pages.map(page => page.owner))
+      .then(users => new Map(users.map(u => [u.id, u])))
+      .then(ucache => new ViewData("content/list", {
+        items: pages,
+        table: new ViewData("core/table", {
+          columns: [
+            {key: "title", label: "Title"},
+            {key: "owner", label: "Owner", filter: uid => ucache.get(uid.toString()).username},
+            {key: "meta.modified", label: "Modified", filter: date => dateutil.mtime(date)},
+          ],
+          data: pages
+        })
+      }));
+  });
 };
 
 exports.edit = event => {

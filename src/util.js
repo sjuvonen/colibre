@@ -76,4 +76,20 @@ exports.get = (data, path, default_value) => {
     data = data[key] || {};
   });
   return typeof data[last] == "undefined" ? default_value : data[last];
-}
+};
+
+exports.set = (data, path, value) => {
+  let parts = path.split(".");
+  let last = parts.pop();
+  while (parts.length > 0) {
+    let key = parts.shift();
+    if (data instanceof Object && key in data) {
+      data = data[key];
+    } else {
+      console.error('cannot read', key);
+      return false;
+    }
+  }
+  console.log("set", last, value, data);
+  data[last] = value;
+};

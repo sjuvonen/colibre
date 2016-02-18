@@ -16,7 +16,7 @@ exports.configure = services => {
     },
     mtime: date => {
       return dateutil.mtime(date);
-    }
+    },
   };
 
   let functions = {
@@ -31,6 +31,7 @@ exports.configure = services => {
     get: (data, path, default_value) => {
       return cmsutil.get(data, path, default_value);
     },
+    exists: (key, data) => data instanceof Object && key in data,
   };
 
   for (let name in filters) {

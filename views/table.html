@@ -11,7 +11,13 @@
     {% for row in data %}
       <tr>
         {% for column in columns %}
-          <td>{{ get(row, column.key)|transform(column.filter) }}</td>
+          <td>
+            {% if exists("filter", column) %}
+              {{ column.filter(get(row, column.key)) }}
+            {% else %}
+              {{ get(row, column.key) }}
+            {% endif %}
+          </td>
         {% endfor %}
       </tr>
     {% endfor %}

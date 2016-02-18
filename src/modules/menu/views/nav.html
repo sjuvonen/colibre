@@ -2,7 +2,7 @@
   <ul class="nav {{ options.classes|join(" ") }}">
     {% for link in links %}
       <li class="nav-item">
-        <a class="nav-link" href="{{ link.url }}">{{ link.name }}</a>
+        <a class="nav-link {% if link.active %}active{% endif %}" href="{{ link.url }}">{{ link.name }}</a>
       </li>
     {% endfor %}
   </ul>

@@ -75,7 +75,7 @@ exports.configure = services => {
       event.locals.blocks.forEach((blocks, region) => {
         cache.set(region, []);
         blocks.forEach((block, key) => {
-          promises.push(cmsutil.promisify(block.render(event.view)).then(rendered => {
+          promises.push(cmsutil.promisify(block.render(event.view, event)).then(rendered => {
             cache.get(region).push(rendered);
           }));
         });

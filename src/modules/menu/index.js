@@ -14,7 +14,7 @@ class MenuBlock extends Block {
     }
   }
 
-  render(view) {
+  render(view, event) {
     return view.render(this.style, {
       id: this.id.replace(/\./g, "-"),
       options: this.options,
@@ -22,6 +22,7 @@ class MenuBlock extends Block {
         if (!link.url) {
           link.url = this.urlBuilder.fromRoute(link.route, link.params);
         }
+        link.active = (event.request.path == link.url);
         return link;
       })
     });

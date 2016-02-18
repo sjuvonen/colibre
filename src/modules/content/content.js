@@ -12,7 +12,7 @@ function * filter_iterator(rows) {
 }
 
 exports.list = event => {
-  return mongoose.model("page").find().then(pages => {
+  return mongoose.model("page").find().sort("-meta.modified").then(pages => {
     return mongoose.model("user")
       .find(pages.map(page => page.owner))
       .then(users => new Map(users.map(u => [u.id, u])))

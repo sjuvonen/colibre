@@ -1,5 +1,10 @@
 [
   {
+    "name": "view",
+    "path": "/page/:page",
+    "action": "content.view"
+  },
+  {
     "name": "list",
     "path": "/admin/content",
     "action": "content.list"

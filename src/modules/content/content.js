@@ -38,9 +38,14 @@ exports.list = event => {
 };
 
 exports.edit = event => {
-  let form = this.forms.get("page.edit").setData(event.params.page);
-  return new ViewData("content/edit", {
-    form: form,
+  return this.urlAlias.aliasForPath(this.entityUrl.get("page", "view", event.params.page)).then(alias => {
+    let form = this.forms.get("page.edit").setData(event.params.page);
+    form.fields.get("urlalias").value = alias;
+    return new ViewData("content/edit", {
+      form: form,
+    });
+  }, error => {
+    console.error(error.stack);
   });
 };
 
@@ -52,6 +57,12 @@ exports.save = event => {
   }
   return this.formValidator.validate(form)
     .then(() => page.set(form.value).set("meta.modified", Date.now()).save())
+    .then(() => {
+      if (form.value.urlalias) {
+        let base_url = this.entityUrl.get("page", "view", page);
+        return this.urlAlias.saveAlias(form.value.urlalias, base_url);
+      }
+    })
     .then(() => event.response.redirect(this.urlBuilder.fromRoute("content.edit", {page: page.id})))
     .catch(error => {
       // Should handle form validation errors, too
@@ -63,4 +74,6 @@ exports.configure = services => {
   this.forms = services.get("form.manager");
   this.formValidator = services.get("form.validator");
   this.urlBuilder = services.get("url.builder");
+  this.urlAlias = services.get("url.alias");
+  this.entityUrl = services.get("url.entity");
 };

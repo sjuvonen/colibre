@@ -25,6 +25,9 @@ let PageSchema = new mongoose.Schema({
 
 mongoose.model("page", PageSchema);
 
+/**
+ * Helper for building URLs for acting with entities.
+ */
 class EntityUrlBuilder {
   constructor(url_builder, mappings) {
     this.urlBuilder = url_builder;

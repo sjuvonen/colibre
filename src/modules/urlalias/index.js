@@ -43,4 +43,21 @@ class UrlAliasManager {
 
 exports.configure = services => {
   services.register("url.alias", new UrlAliasManager);
+
+  // services.get("router").route(".", event => {
+  //   console.log("FALLBACK");
+  // });
+
+  services.get("event.manager").on("app.ready", app_event => {
+    app_event.app.use(event => {
+      return mongoose.model("urlalias")
+        .findOne({alias: event.request.path})
+        .then(alias => {
+          if (alias) {
+            event.request.overridePath(alias.path);
+          }
+          return Promise.accept();
+        });
+    });
+  });
 };

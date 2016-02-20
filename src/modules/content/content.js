@@ -11,6 +11,12 @@ function * filter_iterator(rows) {
   }
 }
 
+exports.view = event => {
+  return new ViewData("content/view", {
+    page: event.params.page
+  });
+};
+
 exports.list = event => {
   return mongoose.model("page").find().sort("-meta.modified").then(pages => {
     return mongoose.model("user")
@@ -40,7 +46,7 @@ exports.list = event => {
 exports.edit = event => {
   return this.urlAlias.aliasForPath(this.entityUrl.get("page", "view", event.params.page)).then(alias => {
     let form = this.forms.get("page.edit").setData(event.params.page);
-    form.fields.get("urlalias").value = alias;
+    form.fields.get("urlalias").value = alias || "";
     return new ViewData("content/edit", {
       form: form,
     });

@@ -28,6 +28,11 @@ class Request {
       value: Object.create(null),
     });
     this.meta.req = req;
+    this.meta.path = req.path;
+  }
+
+  overridePath(new_path) {
+    this.meta.path = new_path;
   }
 
   get _raw() {
@@ -43,7 +48,7 @@ class Request {
   }
 
   get path() {
-    return this._raw.path;
+    return this.meta.path;
   }
 
   get session() {
@@ -236,7 +241,6 @@ class App {
           });
         });
       }).catch(error => console.error("app.start", error.stack));
-    return this;
   }
 
   onRequestBegin(req, res, done) {
@@ -245,7 +249,7 @@ class App {
     let next = () => {
       if (middleware.length) {
         let callback = middleware.shift()[0][0];
-        cmsutil.promisify(callback(event)).then(next, error => console.error("app.onRequestBegin:", error.stack));
+        cmsutil.promisify(callback(event)).then(next).catch(error => console.error("app.onRequestBegin:", error.stack));
       } else {
         done();
       }

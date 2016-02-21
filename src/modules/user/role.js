@@ -24,7 +24,7 @@ exports.list = event => {
 };
 
 exports.edit = event => {
-  console.log("role.edit");
+  return "edit role";
 };
 
 exports.configure = services => {

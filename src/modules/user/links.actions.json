@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Create user",
+    "route": "user.new",
+    "parent": "user.list"
+  },
+  {
+    "name": "Add role",
+    "route": "user.role.new",
+    "parent": "user.role.list"
+  }
+]

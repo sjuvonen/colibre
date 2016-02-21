@@ -32,6 +32,7 @@ class BlockChain {
     this.regions = new Map([
       ["page_top", new BlockRegion(this)],
       ["header", new BlockRegion(this)],
+      ["main_top", new BlockRegion(this)],
       ["content_top", new BlockRegion(this)],
     ]);
     this.blocks = new Map;

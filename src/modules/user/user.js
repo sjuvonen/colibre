@@ -47,6 +47,10 @@ exports.list = event => {
   });
 };
 
+exports.edit = event => {
+  return "OK";
+};
+
 exports.configure = services => {
   this.formManager = services.get("form.manager");
   this.urlBuilder = services.get("url.builder");

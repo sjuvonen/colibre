@@ -14,11 +14,11 @@
     {{ blocks.header }}
   </header>
   <main id="l-main">
-    {% if blocks.content_top or page_title %}
+    {% if blocks.main_top or page_title %}
       <header class="main-header">
         <div class="container">
           <h1 class="page-title container">{{ page_title }}</h1>
-          {{ blocks.content_top }}
+          {{ blocks.main_top }}
         </div>
       </header>
     {% endif %}
@@ -27,6 +27,7 @@
         <li><a>Home</a></li>
         <li><a>Foobar</a></li>
       </ol>
+      {{ blocks.content_top }}
       {{ content }}
       {{ blocks.content_bottom }}
     </div>

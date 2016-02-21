@@ -40,12 +40,14 @@ class LinkManager {
   }
 
   addLinks(links) {
-    links.forEach(link => {
-      if (!this.links.has(link.parent)) {
-        this.links.set(link.parent, []);
-      }
-      this.links.get(link.parent).push(link);
-    });
+    links.forEach(link => this.add(link));
+  }
+
+  add(link) {
+    if (!this.links.has(link.parent)) {
+      this.links.set(link.parent, []);
+    }
+    this.links.get(link.parent).push(link);
   }
 
   linksForPath(path) {
@@ -53,11 +55,25 @@ class LinkManager {
       if (this.links.has(match.route.name)) {
         return new LinkCollection(match, this.links.get(match.route.name));
       }
-      return this.router.match(path.substring(0, path.lastIndexOf("/")), "get").then(match => {
-        if (this.links.has(match.route.name)) {
-          return new LinkCollection(match, this.links.get(match.route.name));
-        }
-      });
+    });
+  }
+}
+
+class LinkTabManager extends LinkManager {
+  constructor(router) {
+    super(router);
+    this.reverseMap = new Map;
+  }
+
+  add(link) {
+    super.add(link);
+    this.reverseMap.set(link.route, link.parent);
+  }
+
+  linksForPath(path) {
+    return this.router.match(path, "get").then(match => {
+      let parent = this.reverseMap.get(match.route.name);
+      return parent ? new LinkCollection(match, this.links.get(parent)) : null;
     });
   }
 }
@@ -78,7 +94,8 @@ class LinkCollection {
 }
 
 exports.configure = services => {
-  services.register("menu.links.tabs", new LinkManager(services.get("router")));
+  services.register("menu.links.actions", new LinkManager(services.get("router")));
+  services.register("menu.links.tabs", new LinkTabManager(services.get("router")));
 
   let blocks = services.get("block.manager");
 
@@ -96,21 +113,26 @@ exports.configure = services => {
   });
 
   services.get("event.manager").on("app.ready", event => {
-    let link_manager = services.get("menu.links.tabs");
     services.get("module.manager").modules.forEach(module => {
       try {
         let links = require(module.path + "/links.tabs.json");
-        link_manager.addLinks(links);
+        services.get("menu.links.tabs").addLinks(links);
       } catch (error) {
+        // pass, file does not exist
+      }
 
+      try {
+        let links = require(module.path + "/links.actions.json");
+        services.get("menu.links.actions").addLinks(links);
+      } catch (error) {
+        // pass, file does not exist
       }
     });
   });
 
   services.get("event.manager").on("app.request", event => {
     services.get("menu.links.tabs").linksForPath(event.request.path).then(links => {
-      let block = blocks.create("menu", links.parent, {
-        // style: "menu/navbar",
+      let block = blocks.create("menu", "tabs." + links.parent, {
         classes: ["nav-tabs"]
       });
       links.forEach(link => {
@@ -120,7 +142,21 @@ exports.configure = services => {
           params: links.match.params,
         });
       });
-      event.locals.blocks.get("content_top").set("content_tabs", block);
+      event.locals.blocks.get("main_top").set("content_tabs", block);
+    });
+
+    services.get("menu.links.actions").linksForPath(event.request.path).then(links => {
+      let block = blocks.create("menu", "actions." + links.parent, {
+        style: "menu/actions",
+      });
+      links.forEach(link => {
+        block.links.push({
+          name: link.name,
+          route: link.route,
+          params: links.match.params,
+        });
+      });
+      event.locals.blocks.get("content_top").set("content_actions", block);
     });
   });
 };

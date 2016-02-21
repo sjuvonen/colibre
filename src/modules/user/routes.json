@@ -26,6 +26,11 @@
     "action": "role.list"
   },
   {
+    "name": "role.new",
+    "path": "/admin/users/roles/new",
+    "action": "role.edit"
+  },
+  {
     "name": "role.edit",
     "path": "/admin/users/roles/:role",
     "action": "role.edit"
@@ -34,6 +39,11 @@
     "name": "list",
     "path": "/admin/users",
     "action": "user.list"
+  },
+  {
+    "name": "new",
+    "path": "/admin/users/new",
+    "action": "user.edit"
   },
   {
     "name": "edit",

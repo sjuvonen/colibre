@@ -113,7 +113,6 @@ exports.configure = services => {
         // style: "menu/navbar",
         classes: ["nav-tabs"]
       });
-      try {
       links.forEach(link => {
         block.links.push({
           name: link.name,
@@ -122,11 +121,6 @@ exports.configure = services => {
         });
       });
       event.locals.blocks.get("content_top").set("content_tabs", block);
-    } catch (error) {
-      console.error(error.stack);
-    }
-    }, error => {
-      console.error("error", error.stack);
     });
   });
 };

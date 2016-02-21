@@ -135,7 +135,7 @@ exports.configure = services => {
   });
 
   services.get("event.manager").on("app.route", event => {
-    
+
   });
 
   services.get("event.manager").on("app.ready", event => {
@@ -144,7 +144,7 @@ exports.configure = services => {
     services.get("event.manager").on("app.request", event => {
       if (event.identity.admin) {
         event.locals.blocks.getBlock("admin_menu").links.push({
-          name: "Users",
+          name: "Accounts",
           route: "user.list"
         });
       }

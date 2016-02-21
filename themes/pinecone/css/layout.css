@@ -27,5 +27,6 @@ ol.breadcrumb {
 /* line 24, ../scss/layout.scss */
 .page-title {
   padding: 0.5em 0;
+  margin: 0;
   font-size: 1.6rem;
 }

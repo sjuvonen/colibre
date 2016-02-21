@@ -23,7 +23,6 @@ exports.list = event => {
 };
 
 exports.edit = event => {
-  console.log("EDIT ROLE", event.params.role);
   let form = this.formManager.get("role.edit").setData(event.params.role);
   return new ViewData("core/form", {
     page_title: "Create role",
@@ -32,7 +31,6 @@ exports.edit = event => {
 };
 
 exports.save = event => {
-  console.log("SAVE ROLE");
   let form = this.formManager.get("role.edit").setData(event.request.body);
   let role = event.params.role;
   return this.formValidator.validate(form)

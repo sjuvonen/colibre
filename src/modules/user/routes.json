@@ -19,5 +19,25 @@
     "name": "account",
     "path": "/account",
     "action": "user.account"
+  },
+  {
+    "name": "role.list",
+    "path": "/admin/users/roles",
+    "action": "role.list"
+  },
+  {
+    "name": "role.edit",
+    "path": "/admin/users/roles/:role",
+    "action": "role.edit"
+  },
+  {
+    "name": "list",
+    "path": "/admin/users",
+    "action": "user.list"
+  },
+  {
+    "name": "edit",
+    "path": "/admin/users/:user",
+    "action": "user.edit"
   }
 ]

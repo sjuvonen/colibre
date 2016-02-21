@@ -33,19 +33,20 @@ class Router {
    * Match request path and method to a route
    */
   match(path, method, host) {
-    // for (let route of this.routes) {
-    for (let i = 0; i < this.routes.length; i++) {
-      let route = this.routes[i];
-      if (route.matches(path, method, host)) {
-        // let route = pair[1];
-        let params = route.parse(path);
+    return new Promise((resolve, reject) => {
+      for (let i = 0; i < this.routes.length; i++) {
+        let route = this.routes[i];
+        if (route.matches(path, method, host)) {
+          // let route = pair[1];
+          let params = route.parse(path);
 
-        return this.converter.convert(params).then(converted => {
-          return new RouteMatch(route, converted);
-        });
+          return this.converter.convert(params).then(converted => {
+            resolve(new RouteMatch(route, converted));
+          });
+        }
       }
-    }
-    return Promise.reject(new Error("No match"));
+      reject(new Error("No match"));
+    });
   }
 }
 

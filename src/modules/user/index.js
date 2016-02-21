@@ -10,6 +10,7 @@ let UserSchema = new mongoose.Schema({
   username: String,
   password: String,
   email: String,
+  roles: [{type: String, ref: "Role"}],
   meta: {
     created: {
       type: Date,
@@ -18,6 +19,31 @@ let UserSchema = new mongoose.Schema({
     login: Date,
   }
 });
+
+UserSchema.statics.findByCredentials = function(username, password) {
+  return new Promise((resolve, reject) => {
+    this.findOne({username: username}).then(user => {
+      this.verifyPassword(user.password, password).then(() => resolve(user), reject);
+    }, reject);
+  });
+};
+
+UserSchema.statics.verifyPassword = function(hash, password) {
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(password, hash, (error, ok) => {
+      ok ? resolve() : reject(error || new Error("Invalid password"));
+    });
+  });
+};
+
+mongoose.model("user", UserSchema);
+
+let RoleSchema = new mongoose.Schema({
+  _id: {type: String},
+  name: String,
+});
+
+mongoose.model("role", RoleSchema);
 
 class Identity {
   constructor(user) {
@@ -38,22 +64,6 @@ class Identity {
     }
   }
 }
-
-UserSchema.statics.findByCredentials = function(username, password) {
-  return new Promise((resolve, reject) => {
-    this.findOne({username: username}).then(user => {
-      this.verifyPassword(user.password, password).then(() => resolve(user), reject);
-    }, reject);
-  });
-};
-
-UserSchema.statics.verifyPassword = function(hash, password) {
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(password, hash, (error, ok) => {
-      ok ? resolve() : reject(error || new Error("Invalid password"));
-    });
-  });
-};
 
 class LoginManager {
   constructor(passport, url_builder) {
@@ -81,8 +91,6 @@ class LoginManager {
     });
   }
 }
-
-mongoose.model("user", UserSchema);
 
 passport.use(new LocalStrategy((username, password, done) => {
   mongoose.model("user").findByCredentials(username, password).then(
@@ -124,6 +132,23 @@ exports.configure = services => {
         route: "user.login"
       });
     }
+  });
+
+  services.get("event.manager").on("app.route", event => {
+    
+  });
+
+  services.get("event.manager").on("app.ready", event => {
+    // Admin module inserts this block in app.request event, so we must bind this handler
+    // AFTER that, i.e. after app.ready is emitted.
+    services.get("event.manager").on("app.request", event => {
+      if (event.identity.admin) {
+        event.locals.blocks.getBlock("admin_menu").links.push({
+          name: "Users",
+          route: "user.list"
+        });
+      }
+    });
   });
 
   let form_builder = services.get("form.builder");

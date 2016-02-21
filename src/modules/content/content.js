@@ -23,6 +23,7 @@ exports.list = event => {
       .find(pages.map(page => page.owner))
       .then(users => new Map(users.map(u => [u.id, u])))
       .then(ucache => new ViewData("content/list", {
+        page_title: "Pages",
         items: pages,
         table: new ViewData("core/table", {
           columns: [
@@ -48,6 +49,7 @@ exports.edit = event => {
     let form = this.forms.get("page.edit").setData(event.params.page);
     form.fields.get("urlalias").value = alias || "";
     return new ViewData("content/edit", {
+      page_title: event.params.page.id ? "Edit content" : "Create page",
       form: form,
     });
   }, error => {

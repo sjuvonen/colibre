@@ -3,6 +3,25 @@
   overflow-y: hidden;
 }
 
+// Bootstrap-like helper class for defining color
 .bg-primary {
   background-color: #8B1C1C !important;
+}
+
+ol.breadcrumb {
+  background-color: transparent;
+}
+
+.main-header {
+  background-color: #E2F5FF;
+  border-bottom: 1px solid #ddd;
+
+  .nav-tabs {
+    margin-bottom: -1px;
+  }
+}
+
+.page-title {
+  padding: 0.5em 0;
+  font-size: 1.6rem;
 }

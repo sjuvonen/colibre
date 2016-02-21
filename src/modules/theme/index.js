@@ -10,7 +10,9 @@ exports.configure = services => {
   services.get("view").templates.addPath("layout", util.format("themes/%s/views/layout", theme));
   services.get("event.manager").on("view.render", event => {
     if (event.data instanceof ViewData) {
+      let page_title = event.data.variables.page_title || null;
       event.data = new ViewData("layout", {
+        page_title: page_title,
         identity: event.identity,
         content: event.data,
       });

@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Users",
+    "route": "user.list",
+    "parent": "user.list"
+  },
+  {
+    "name": "Roles",
+    "route": "user.role.list",
+    "parent": "user.list"
+  }
+]

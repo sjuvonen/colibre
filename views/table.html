@@ -1,5 +1,11 @@
 
+{% if title %}
+  <h2>{{ title }}</h2>
+{% endif %}
 <table class="table">
+  {% if caption %}
+    <caption>{{ caption }}</caption>
+  {% endif %}
   <thead>
     <tr>
       {% for column in columns %}

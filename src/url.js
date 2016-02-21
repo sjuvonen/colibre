@@ -1,5 +1,7 @@
 "use strict";
 
+let util = require("util");
+
 /**
  * Compiles URLs from route name and parameters.
  */
@@ -48,4 +50,30 @@ class UrlBuilder {
   }
 }
 
+/**
+ * Helper for building URLs for acting with entities.
+ */
+class EntityUrlBuilder {
+  constructor(url_builder, mappings) {
+    this.urlBuilder = url_builder;
+    this.mappings = new Map;
+
+    Object.keys(mappings || {}).forEach(key => {
+      this.setMapping(key, mappings[key]);
+    });
+  }
+
+  setMapping(entity_type, mapped_type) {
+    this.mappings.set(entity_type, mapped_type);
+  }
+
+  get(entity_type, action, entity) {
+    let type = this.mappings.get(entity_type) || entity_type;
+    let params = entity ? {[entity_type]: entity.id} : {};
+    let route_name = util.format("%s.%s", type, action);
+    return this.urlBuilder.fromRoute(route_name, params);
+  }
+}
+
 exports.UrlBuilder = UrlBuilder;
+exports.EntityUrlBuilder = EntityUrlBuilder;

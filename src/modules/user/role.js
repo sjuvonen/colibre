@@ -12,20 +12,41 @@ exports.list = event => {
         key: "id",
         label: "ID",
         filter: (role_id, role) => {
-          let url = this.urlBuilder.fromRoute("role.edit", {role: role.id});
+          let url = this.entityUrl.get("role", "edit", role);
           return util.format('<a href="%s">%s</a>', url, role_id);
         }
       },
+      {key: "name", label: "Name"}
     ],
     data: roles
   }));
 };
 
 exports.edit = event => {
-  return "edit role";
+  console.log("EDIT ROLE", event.params.role);
+  let form = this.formManager.get("role.edit").setData(event.params.role);
+  return new ViewData("core/form", {
+    page_title: "Create role",
+    form: form
+  });
+};
+
+exports.save = event => {
+  console.log("SAVE ROLE");
+  let form = this.formManager.get("role.edit").setData(event.request.body);
+  let role = event.params.role;
+  return this.formValidator.validate(form)
+    .then(() => role.set(form.value).save())
+    .then(() => event.redirect(this.entityUrl.get("role", "edit", role)))
+    .catch(error => console.error(error.stack));
+};
+
+exports.permissions = event => {
+  return "edit permissions";
 };
 
 exports.configure = services => {
   this.formManager = services.get("form.manager");
-  this.urlBuilder = services.get("url.builder");
+  this.formValidator = services.get("form.validator");
+  this.entityUrl = services.get("url.entity");
 };

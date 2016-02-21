@@ -108,6 +108,8 @@ passport.deserializeUser((id, done) => mongoose.model("user").findById(id).then(
 exports.configure = services => {
   services.register("login.manager", new LoginManager(passport, services.get("url.builder")));
 
+  services.get("url.entity").setMapping("role", "user.role");
+
   services.get("event.manager").on("app.ready", event => {
     event.app.baseApp.use(passport.initialize());
     event.app.baseApp.use(passport.session());
@@ -175,5 +177,30 @@ exports.configure = services => {
         submit: true,
       }
     }
+  ]));
+
+  services.get("form.manager").registerFactory("role.edit", () => form_builder.create("role-edit", [
+    {
+      name: "_id",
+      type: "text",
+      options: {
+        label: "Role ID"
+      }
+    },
+    {
+      name: "name",
+      type: "text",
+      options: {
+        label: "Name"
+      }
+    },
+    {
+      name: "actions",
+      type: "actions",
+      options: {
+        submit: true,
+        reset: true,
+      }
+    },
   ]));
 };

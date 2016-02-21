@@ -31,7 +31,7 @@ exports.list = event => {
               key: "title",
               label: "Title",
               filter: (title, page) => {
-                let url = this.urlBuilder.fromRoute("content.edit", {page: page.id});
+                let url = this.entityUrl.get("page", "edit", page);
                 return util.format('<a href="%s">%s</a>', url, title);
               }
             },
@@ -71,7 +71,7 @@ exports.save = event => {
         return this.urlAlias.saveAlias(form.value.urlalias, base_url);
       }
     })
-    .then(() => event.response.redirect(this.urlBuilder.fromRoute("content.edit", {page: page.id})))
+    .then(() => event.redirect(this.entityUrl.get("page", "edit", page)))
     .catch(error => {
       // Should handle form validation errors, too
       console.error("FAILED", error.stack);
@@ -81,7 +81,6 @@ exports.save = event => {
 exports.configure = services => {
   this.forms = services.get("form.manager");
   this.formValidator = services.get("form.validator");
-  this.urlBuilder = services.get("url.builder");
   this.urlAlias = services.get("url.alias");
   this.entityUrl = services.get("url.entity");
 };

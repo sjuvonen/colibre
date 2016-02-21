@@ -21,6 +21,11 @@
     "action": "user.account"
   },
   {
+    "name": "role.permissions",
+    "path": "/admin/permissions",
+    "action": "role.permissions"
+  },
+  {
     "name": "role.list",
     "path": "/admin/users/roles",
     "action": "role.list"
@@ -28,12 +33,40 @@
   {
     "name": "role.new",
     "path": "/admin/users/roles/new",
-    "action": "role.edit"
+    "action": "role.edit",
+    "defaults": {
+      "role": null
+    },
+    "requirements": {
+      "method": "get"
+    }
+  },
+  {
+    "name": "role.new.post",
+    "path": "/admin/users/roles/new",
+    "action": "role.save",
+    "defaults": {
+      "role": null
+    },
+    "requirements": {
+      "method": "post"
+    }
   },
   {
     "name": "role.edit",
     "path": "/admin/users/roles/:role",
-    "action": "role.edit"
+    "action": "role.edit",
+    "requirements": {
+      "method": "get"
+    }
+  },
+  {
+    "name": "role.edit.post",
+    "path": "/admin/users/roles/:role",
+    "action": "role.save",
+    "requirements": {
+      "method": "post"
+    }
   },
   {
     "name": "list",
@@ -43,11 +76,39 @@
   {
     "name": "new",
     "path": "/admin/users/new",
-    "action": "user.edit"
+    "action": "user.edit",
+    "defaults": {
+      "page": null
+    },
+    "requirements": {
+      "method": "get"
+    }
+  },
+  {
+    "name": "new.post",
+    "path": "/admin/users/new",
+    "action": "user.save",
+    "defaults": {
+      "page": null
+    },
+    "requirements": {
+      "method": "post"
+    }
   },
   {
     "name": "edit",
     "path": "/admin/users/:user",
-    "action": "user.edit"
+    "action": "user.edit",
+    "requirements": {
+      "method": "get"
+    }
+  },
+  {
+    "name": "edit.post",
+    "path": "/admin/users/:user",
+    "action": "user.save",
+    "requirements": {
+      "method": "post"
+    }
   }
 ]

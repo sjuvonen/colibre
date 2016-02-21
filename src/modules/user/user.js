@@ -34,7 +34,7 @@ exports.list = event => {
         key: "username",
         label: "Username",
         filter: (username, user) => {
-          let url = this.urlBuilder.fromRoute("user.edit", {user: user.id});
+          let url = this.entityUrl.get("user", "edit", user);
           return util.format('<a href="%s">%s</a>', url, username);
         }
       },
@@ -51,6 +51,6 @@ exports.edit = event => {
 
 exports.configure = services => {
   this.formManager = services.get("form.manager");
-  this.urlBuilder = services.get("url.builder");
+  this.entityUrl = services.get("url.entity");
   this.loginManager = services.get("login.manager");
 };

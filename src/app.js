@@ -11,6 +11,7 @@ let Router = require("./router").Router;
 let HttpEventDecorator = require("./util").HttpEventDecorator;
 let cmsutil = require("./util");
 let UrlBuilder = require("./url").UrlBuilder;
+let EntityUrlBuilder = require("./url").EntityUrlBuilder;
 
 class Config {
   constructor(config) {
@@ -104,6 +105,10 @@ class HttpEvent {
     this.locals = {};
   }
 
+  redirect(...args) {
+    return this.response.redirect(...args);
+  }
+
   /**
    * Data that will be returned as response.
    */
@@ -165,9 +170,8 @@ class App {
     this.sharedEvents.addEmitter("app", this.events);
     this.sharedEvents.addEmitter("modules", this.modules.events);
 
-    this.services.registerFactory("url.builder", () => {
-      return new UrlBuilder(this.router.routes);
-    });
+    this.services.registerFactory("url.builder", () => new UrlBuilder(this.router.routes));
+    this.services.registerFactory("url.entity", () => new EntityUrlBuilder(this.services.get("url.builder")));
 
     this.events.on("ready", () => {
       this.use(1000, event => this.onRequest(event));

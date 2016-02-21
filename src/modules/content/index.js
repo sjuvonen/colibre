@@ -25,31 +25,6 @@ let PageSchema = new mongoose.Schema({
 
 mongoose.model("page", PageSchema);
 
-/**
- * Helper for building URLs for acting with entities.
- */
-class EntityUrlBuilder {
-  constructor(url_builder, mappings) {
-    this.urlBuilder = url_builder;
-    this.mappings = new Map;
-
-    Object.keys(mappings || {}).forEach(key => {
-      this.setMapping(key, mappings[key]);
-    });
-  }
-
-  setMapping(entity_type, mapped_type) {
-    this.mappings.set(entity_type, mapped_type);
-  }
-
-  get(entity_type, action, entity) {
-    let type = this.mappings.get(entity_type) || entity_type;
-    let params = entity ? {[entity_type]: entity.id} : {};
-    let route_name = util.format("%s.%s", type, action);
-    return this.urlBuilder.fromRoute(route_name, params);
-  }
-}
-
 exports.configure = services => {
   let blocks = services.get("block.manager");
   blocks.registerFactory("admin-content-tabs", options => {
@@ -141,7 +116,5 @@ exports.configure = services => {
     }
   });
 
-  services.register("url.entity", new EntityUrlBuilder(services.get("url.builder"), {
-    "page": "content"
-  }));
+  services.get("url.entity").setMapping("page", "content");
 };

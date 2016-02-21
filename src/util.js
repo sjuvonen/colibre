@@ -8,6 +8,10 @@ class HttpEventDecorator {
     this.httpEvent = http_event;
   }
 
+  redirect(...args) {
+    return this.httpEvent.redirect(...args);
+  }
+
   get request() {
     return this.httpEvent.request;
   }

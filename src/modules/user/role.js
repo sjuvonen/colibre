@@ -5,7 +5,7 @@ let util = require("util");
 let ViewData = require("../view").ViewData;
 
 exports.list = event => {
-  return mongoose.model("role").find().then(roles => new ViewData("core/table", {
+  return mongoose.model("role").find().sort("name").then(roles => new ViewData("core/table", {
     page_title: "Roles",
     columns: [
       {
@@ -35,7 +35,7 @@ exports.save = event => {
   let role = event.params.role;
   return this.formValidator.validate(form)
     .then(() => role.set(form.value).save())
-    .then(() => event.redirect(this.entityUrl.get("role", "edit", role)))
+    .then(() => event.redirect(this.entityUrl.get("role", "list", role)))
     .catch(error => console.error(error.stack));
 };
 

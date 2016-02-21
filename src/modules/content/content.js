@@ -71,7 +71,7 @@ exports.save = event => {
         return this.urlAlias.saveAlias(form.value.urlalias, base_url);
       }
     })
-    .then(() => event.redirect(this.entityUrl.get("page", "edit", page)))
+    .then(() => event.redirect(this.entityUrl.get("page", "list", page)))
     .catch(error => {
       // Should handle form validation errors, too
       console.error("FAILED", error.stack);

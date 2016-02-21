@@ -27,24 +27,22 @@ exports.account = event => {
 };
 
 exports.list = event => {
-  return mongoose.model("user").find().sort("username").then(users => {
-    return new ViewData("core/table", {
-      page_title: "Users",
-      columns: [
-        {
-          key: "username",
-          label: "Username",
-          filter: (username, user) => {
-            let url = this.urlBuilder.fromRoute("user.edit", {user: user.id});
-            return util.format('<a href="%s">%s</a>', url, username);
-          }
-        },
-        {key: "email", label: "Email"},
-        {key: "roles", label: "Roles", filter: roles => roles.toString()}
-      ],
-      data: users
-    });
-  });
+  return mongoose.model("user").find().sort("username").then(users => new ViewData("core/table", {
+    page_title: "Users",
+    columns: [
+      {
+        key: "username",
+        label: "Username",
+        filter: (username, user) => {
+          let url = this.urlBuilder.fromRoute("user.edit", {user: user.id});
+          return util.format('<a href="%s">%s</a>', url, username);
+        }
+      },
+      {key: "email", label: "Email"},
+      {key: "roles", label: "Roles", filter: roles => roles.toString()}
+    ],
+    data: users
+  }));
 };
 
 exports.edit = event => {

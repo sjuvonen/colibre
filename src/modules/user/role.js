@@ -49,11 +49,9 @@ exports.permissions = event => {
 exports.savePermissions = event => {
   return this.formManager.get("role.permissions")
     .then(form => form.setData(event.request.body))
-    .then(form => this.formValidator.validate(form))
-    .then(data => mongoose.model("role").find()
-      .then(roles => Promise.all(roles.map(role => role.set("permissions", data[role.id]).save())))
-    )
-    .then(() => event.redirect(this.urlBuilder.fromRoute("user.role.permissions")))
+    .then(form => Promise.all([mongoose.model("role").find(), this.formValidator.validate(form)]))
+    .then(res => Promise.all(res[0].map(role => role.set("permissions", res[1][role.id]).save())))
+    .then(entities => event.redirect(this.urlBuilder.fromRoute("user.role.permissions")))
     .catch(error => console.error(error.stack));
 };
 

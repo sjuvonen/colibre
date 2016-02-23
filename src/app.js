@@ -229,7 +229,7 @@ class App {
     this.baseApp = express();
     this.baseApp.use(express.static("public"));
     this.baseApp.use(cookie_parser());
-    this.baseApp.use(body_parser.urlencoded({extended: false}));
+    this.baseApp.use(body_parser.urlencoded({extended: true}));
 
     return this.events.emit("bootstrap", {app: this})
       .then(() => this.events.emit("ready", {app: this}))

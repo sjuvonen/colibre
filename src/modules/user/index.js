@@ -115,7 +115,6 @@ exports.configure = services => {
     event.app.baseApp.use(passport.session());
   });
 
-
   services.get("event.manager").on("app.request", event => {
     event.locals.identity = new Identity(event.request._raw.user);
   });
@@ -178,6 +177,76 @@ exports.configure = services => {
       }
     }
   ]));
+
+  // services.get("form.manager").registerFactory("user.edit", () => form_builder.create("user-edit", [
+  //   {
+  //     name: "username",
+  //     type: "text",
+  //     options: {
+  //       label: "Username",
+  //     }
+  //   },
+  //   {
+  //     name: "email",
+  //     type: "email",
+  //     options: {
+  //       label: "Email"
+  //     }
+  //   },
+  //   {
+  //     name: "roles",
+  //     type: "options",
+  //     options: {
+  //       label: "Roles",
+  //       multiple: true,
+  //       options: [{key: "foo", value: "Foobar"}]
+  //     }
+  //   },
+  //   {
+  //     name: "actions",
+  //     type: "actions",
+  //     options: {
+  //       submit: true
+  //     }
+  //   }
+  // ]));
+
+  services.get("form.manager").registerFactory("user.edit", () => mongoose.model("role")
+    .find()
+    .sort("name")
+    .then(roles => form_builder.create("user-edit", [
+      {
+        name: "username",
+        type: "text",
+        options: {
+          label: "Username",
+        }
+      },
+      {
+        name: "email",
+        type: "email",
+        options: {
+          label: "Email"
+        }
+      },
+      {
+        name: "roles",
+        type: "options",
+        options: {
+          label: "Roles",
+          multiple: true,
+          options: roles.map(role => ({key: role.id, value: role.name}))
+        }
+      },
+      {
+        name: "actions",
+        type: "actions",
+        options: {
+          submit: true
+        }
+      }
+    ]))
+  );
 
   services.get("form.manager").registerFactory("role.edit", () => form_builder.create("role-edit", [
     {

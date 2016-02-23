@@ -46,11 +46,23 @@ exports.list = event => {
 };
 
 exports.edit = event => {
-  return "OK";
+  return this.formManager.get("user.edit").then(form => new ViewData("core/form", {
+    form: form.setData(event.params.user)
+  }));
+};
+
+exports.save = event => {
+  return this.formManager.get("user.edit")
+    .then(form => form.setData(event.request.body))
+    .then(form => this.formValidator.validate(form))
+    .then(data => event.params.user.set(data).save())
+    .then(user => event.redirect(this.entityUrl.get("user", "list", user)))
+    .catch(error => console.error(error.stack));
 };
 
 exports.configure = services => {
   this.formManager = services.get("form.manager");
+  this.formValidator = services.get("form.validator");
   this.urlBuilder = services.get("url.builder");
   this.entityUrl = services.get("url.entity");
   this.loginManager = services.get("login.manager");

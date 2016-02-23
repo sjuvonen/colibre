@@ -47,6 +47,7 @@ exports.list = event => {
 
 exports.edit = event => {
   return this.formManager.get("user.edit").then(form => new ViewData("core/form", {
+    page_title: event.params.user.isNew ? "Create user" : "Edit user",
     form: form.setData(event.params.user)
   }));
 };

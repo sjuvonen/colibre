@@ -23,7 +23,18 @@
   {
     "name": "role.permissions",
     "path": "/admin/permissions",
-    "action": "role.permissions"
+    "action": "role.permissions",
+    "requirements": {
+      "method": "get"
+    }
+  },
+  {
+    "name": "role.permissions.post",
+    "path": "/admin/permissions",
+    "action": "role.savePermissions",
+    "requirements": {
+      "method": "post"
+    }
   },
   {
     "name": "role.list",

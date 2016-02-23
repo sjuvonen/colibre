@@ -40,11 +40,26 @@ exports.save = event => {
 };
 
 exports.permissions = event => {
-  return "edit permissions";
+  return this.formManager.get("role.permissions", {populated: true}).then(form => new ViewData("core/form", {
+    page_title: "Edit permissions",
+    form: form
+  }));
+};
+
+exports.savePermissions = event => {
+  return this.formManager.get("role.permissions")
+    .then(form => form.setData(event.request.body))
+    .then(form => this.formValidator.validate(form))
+    .then(data => mongoose.model("role").find()
+      .then(roles => Promise.all(roles.map(role => role.set("permissions", data[role.id]).save())))
+    )
+    .then(() => event.redirect(this.urlBuilder.fromRoute("user.role.permissions")))
+    .catch(error => console.error(error.stack));
 };
 
 exports.configure = services => {
   this.formManager = services.get("form.manager");
   this.formValidator = services.get("form.validator");
   this.entityUrl = services.get("url.entity");
+  this.urlBuilder = services.get("url.builder");
 };

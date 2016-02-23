@@ -1,0 +1,4 @@
+[
+  {"id": "content.edit", "label": "Edit content"},
+  {"id": "content.remove", "label": "Remove content"}
+]

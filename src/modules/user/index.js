@@ -41,6 +41,7 @@ mongoose.model("user", UserSchema);
 let RoleSchema = new mongoose.Schema({
   _id: {type: String},
   name: String,
+  permissions: [String]
 });
 
 mongoose.model("role", RoleSchema);
@@ -92,6 +93,24 @@ class LoginManager {
   }
 }
 
+class PermissionsManager {
+  constructor() {
+    this.permissions = new Map;
+  }
+
+  addPermissions(permissions) {
+    permissions.forEach(p => this.add(p));
+  }
+
+  add(permission) {
+    this.permissions.set(permission.id, permission);
+  }
+
+  get(id) {
+    return this.permissions.get(id);
+  }
+}
+
 passport.use(new LocalStrategy((username, password, done) => {
   mongoose.model("user").findByCredentials(username, password).then(
     user => done(null, user),
@@ -107,12 +126,24 @@ passport.deserializeUser((id, done) => mongoose.model("user").findById(id).then(
 
 exports.configure = services => {
   services.register("login.manager", new LoginManager(passport, services.get("url.builder")));
+  services.register("permissions.manager", new PermissionsManager);
 
   services.get("url.entity").setMapping("role", "user.role");
 
   services.get("event.manager").on("app.ready", event => {
     event.app.baseApp.use(passport.initialize());
     event.app.baseApp.use(passport.session());
+  });
+
+  services.get("event.manager").on("app.ready", event => {
+    services.get("module.manager").modules.forEach(module => {
+      try {
+        let permissions = require(module.path + "/permissions.json");
+        services.get("permissions.manager").addPermissions(permissions);
+      } catch (error) {
+        // Pass, file does not exist
+      };
+    });
   });
 
   services.get("event.manager").on("app.request", event => {
@@ -210,6 +241,55 @@ exports.configure = services => {
   //     }
   //   }
   // ]));
+
+  services.get("form.manager").registerFactory("role.permissions", options => mongoose.model("role")
+    .find()
+    .sort("name")
+    .then(roles => {
+      let permissions = [...services.get("permissions.manager").permissions.values()].map(p => ({
+        key: p.id,
+        value: p.label
+      }));
+      let fields = roles.map(role => ({
+        name: role.id,
+        type: "options",
+        options: {
+          label: role.name,
+          multiple: true,
+          options: permissions,
+          value: (options && options.populated) ? role.permissions : undefined,
+        }
+      }));
+
+      fields.push({
+        name: "actions",
+        type: "actions",
+        options: {
+          submit: true
+        }
+      });
+
+      return form_builder.create("permissions-edit", fields);
+
+    //   return form_builder.create("permissions-edit", [
+    //     {
+    //       name: "roles",
+    //       type: "container",
+    //       fields: fields,
+    //       options: {
+    //         label: "Roles",
+    //         fields: fields
+    //       }
+    //     },
+    //     {
+    //       name: "actions",
+    //       type: "actions",
+    //       options: {
+    //         submit: true
+    //       }
+    //     }
+    //   ]);
+    }));
 
   services.get("form.manager").registerFactory("user.edit", () => mongoose.model("role")
     .find()

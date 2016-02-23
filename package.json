@@ -9,7 +9,7 @@
     "bcrypt": "^0.8.5",
     "body-parser": "^1.13.3",
     "bower": "^1.5.3",
-    "colibre-forms": "git+ssh://git@juvonet.fi:colibre/forms",
+    "colibre-forms": "https://github.com/sjuvonen/colibre-forms.git",
     "connect-mongo": "^1.1.0",
     "cookie-parser": "^1.4.1",
     "express": "^4.13.3",

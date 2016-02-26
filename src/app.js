@@ -241,7 +241,7 @@ class App {
 
         return new Promise((resolve, reject) => {
           this.server = this.baseApp.listen(port, address, () => {
-            this.events.emit("listen", {app: this, server: this.server}).then(resolve);
+            this.events.emit("listen", {app: this, server: this.server}).then(() => resolve(this.server));
           });
         });
       }).catch(error => console.error("app.start", error.stack));

@@ -148,6 +148,9 @@ class AccessManager {
   }
 }
 
+/**
+ * Verify access based on permissions.
+ */
 class PermissionGuard {
   access(route_match, user) {
     let permission = cmsutil.get(route_match.route, "options.requirements.permission");
@@ -168,17 +171,30 @@ class PermissionGuard {
   }
 }
 
+/**
+ * Grant access automaticly to people who have the admin role.
+ */
+class AdminAllowedGuard {
+  access(resource, user) {
+    if (user.roles.indexOf("admin") != -1) {
+      return true;
+    }
+  }
+}
+
 exports.configure = services => {
   services.register("login.manager", new LoginManager(passport, services.get("url.builder")));
   services.register("permissions.manager", new PermissionsManager);
 
   services.registerFactory("access.manager", () => {
     let manager = new AccessManager;
+    manager.addGuard("route", services.get("access.guard.admin_allowed"));
     manager.addGuard("route", services.get("access.guard.permission"));
     return manager;
   });
 
-  services.register("access.guard.permission", new PermissionGuard);
+  services.registerFactory("access.guard.permission", () => new PermissionGuard);
+  services.registerFactory("access.guard.admin_allowed", () => new AdminAllowedGuard);
 
   services.get("url.entity").setMapping("role", "user.role");
 

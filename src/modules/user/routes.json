@@ -25,7 +25,8 @@
     "path": "/admin/permissions",
     "action": "role.permissions",
     "requirements": {
-      "method": "get"
+      "method": "get",
+      "permission": "role.edit"
     }
   },
   {
@@ -33,13 +34,17 @@
     "path": "/admin/permissions",
     "action": "role.savePermissions",
     "requirements": {
-      "method": "post"
+      "method": "post",
+      "permission": "role.edit"
     }
   },
   {
     "name": "role.list",
     "path": "/admin/users/roles",
-    "action": "role.list"
+    "action": "role.list",
+    "requirements": {
+      "permission": "role.edit"
+    }
   },
   {
     "name": "role.new",
@@ -49,7 +54,8 @@
       "role": null
     },
     "requirements": {
-      "method": "get"
+      "method": "get",
+      "permission": "role.edit"
     }
   },
   {
@@ -60,7 +66,8 @@
       "role": null
     },
     "requirements": {
-      "method": "post"
+      "method": "post",
+      "permission": "role.edit"
     }
   },
   {
@@ -68,7 +75,8 @@
     "path": "/admin/users/roles/:role",
     "action": "role.edit",
     "requirements": {
-      "method": "get"
+      "method": "get",
+      "permission": "role.edit"
     }
   },
   {
@@ -76,13 +84,17 @@
     "path": "/admin/users/roles/:role",
     "action": "role.save",
     "requirements": {
-      "method": "post"
+      "method": "post",
+      "permission": "role.edit"
     }
   },
   {
     "name": "list",
     "path": "/admin/users",
-    "action": "user.list"
+    "action": "user.list",
+    "requirements": {
+      "permission": "user.edit"
+    }
   },
   {
     "name": "new",
@@ -92,7 +104,8 @@
       "user": null
     },
     "requirements": {
-      "method": "get"
+      "method": "get",
+      "permission": "user.edit"
     }
   },
   {
@@ -103,7 +116,8 @@
       "user": null
     },
     "requirements": {
-      "method": "post"
+      "method": "post",
+      "permission": "user.edit"
     }
   },
   {
@@ -111,7 +125,8 @@
     "path": "/admin/users/:user",
     "action": "user.edit",
     "requirements": {
-      "method": "get"
+      "method": "get",
+      "permission": "user.edit"
     }
   },
   {
@@ -119,7 +134,8 @@
     "path": "/admin/users/:user",
     "action": "user.save",
     "requirements": {
-      "method": "post"
+      "method": "post",
+      "permission": "user.edit"
     }
   }
 ]

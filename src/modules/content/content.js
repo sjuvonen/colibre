@@ -11,6 +11,8 @@ function * filter_iterator(rows) {
   }
 }
 
+exports.home = event => new ViewData("content/home");
+
 exports.view = event => {
   return new ViewData("content/view", {
     page: event.params.page

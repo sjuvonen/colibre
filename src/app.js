@@ -189,10 +189,10 @@ class App {
     this.events.on("request", event => {
       return this.router.match(event.request.path, event.request.method, event.request.host).then(match => {
         let route_event = new RouteEvent(event, match);
-        return this.events.emit("route", route_event).catch(error => console.error(error.stack));
+        return this.events.emit("route", route_event);
       }, error => {
         console.log("NO MATCH");
-        return Promise.reject(new Error("No handler for route"));
+        return Promise.reject(new Error("No handler for route " + event.request.path));
       });
     });
 
@@ -253,7 +253,10 @@ class App {
     let next = () => {
       if (middleware.length) {
         let callback = middleware.shift()[0][0];
-        cmsutil.promisify(callback(event)).then(next).catch(error => console.error("app.onRequestBegin:", error.stack));
+        cmsutil.promisify(callback(event)).then(next).catch(error => {
+          console.error("app.onRequestBegin:", error.stack);
+          res.status(500).type("text").send(error.stack);
+        });
       } else {
         done();
       }

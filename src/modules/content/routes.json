@@ -1,5 +1,10 @@
 [
   {
+    "name": "home",
+    "path": "/",
+    "action": "content.home"
+  },
+  {
     "name": "view",
     "path": "/page/:page",
     "action": "content.view"
@@ -7,7 +12,10 @@
   {
     "name": "list",
     "path": "/admin/content",
-    "action": "content.list"
+    "action": "content.list",
+    "requirements": {
+      "permission": "content.edit"
+    }
   },
   {
     "name": "new",
@@ -17,7 +25,8 @@
       "page": null
     },
     "requirements": {
-      "method": "get"
+      "method": "get",
+      "permission": "content.edit"
     }
   },
   {
@@ -28,7 +37,8 @@
       "page": null
     },
     "requirements": {
-      "method": "post"
+      "method": "post",
+      "permission": "content.edit"
     }
   },
   {
@@ -36,7 +46,8 @@
     "path": "/admin/content/:page",
     "action": "content.edit",
     "requirements": {
-      "method": "get"
+      "method": "get",
+      "permission": "content.edit"
     }
   },
   {
@@ -44,7 +55,8 @@
     "path": "/admin/content/:page",
     "action": "content.save",
     "requirements": {
-      "method": "post"
+      "method": "post",
+      "permission": "content.edit"
     }
   }
 ]

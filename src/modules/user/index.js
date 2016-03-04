@@ -5,6 +5,7 @@ let mongoose = require("mongoose");
 let passport = require("passport");
 let LocalStrategy = require("passport-local").Strategy;
 let ViewData = require("../view").ViewData;
+let cmsutil = require("../../util");
 
 let UserSchema = new mongoose.Schema({
   username: String,
@@ -124,9 +125,60 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id, done) => mongoose.model("user").findById(id).then(user => done(null, user)));
 
+class AccessManager {
+  constructor() {
+    this.guards = new Map;
+  }
+
+  addGuard(type, guard) {
+    if (!this.guards.has(type)) {
+      this.guards.set(type, []);
+    }
+    this.guards.get(type).push(guard);
+  }
+
+  access(type, resource, user) {
+    if (!this.guards.has(type)) {
+      throw new Exception(util.format("No guard registered for type '%s'", type));
+    }
+    let guards = this.guards.get(type).map(guard => () => guard.access(resource, user));
+    return cmsutil.iterateCallbacks(guards, status => !(status == true)).then(status => {
+      return status == true ? Promise.resolve(true) : Promise.reject(new Error("No access"));
+    });
+  }
+}
+
+class PermissionGuard {
+  access(route_match, user) {
+    let permission = cmsutil.get(route_match.route, "options.requirements.permission");
+    if (permission) {
+      return mongoose.model("role").find({ _id: {
+        $in: user.roles
+      }}).then(roles => {
+        let matches = roles.filter(role => role.permissions.indexOf(permission) != -1);
+        if (matches.length == 0) {
+          console.log("fail...");
+          throw new Error("Requires permission " + permission);
+        }
+        return true;
+      });
+    } else {
+      return true;
+    }
+  }
+}
+
 exports.configure = services => {
   services.register("login.manager", new LoginManager(passport, services.get("url.builder")));
   services.register("permissions.manager", new PermissionsManager);
+
+  services.registerFactory("access.manager", () => {
+    let manager = new AccessManager;
+    manager.addGuard("route", services.get("access.guard.permission"));
+    return manager;
+  });
+
+  services.register("access.guard.permission", new PermissionGuard);
 
   services.get("url.entity").setMapping("role", "user.role");
 
@@ -166,9 +218,7 @@ exports.configure = services => {
     }
   });
 
-  services.get("event.manager").on("app.route", event => {
-
-  });
+  services.get("event.manager").on("app.route", event => services.get("access.manager").access("route", event.routeMatch, event.identity.user));
 
   services.get("event.manager").on("app.ready", event => {
     // Admin module inserts this block in app.request event, so we must bind this handler

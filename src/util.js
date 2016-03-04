@@ -97,3 +97,26 @@ exports.set = (data, path, value) => {
   console.log("set", last, value, data);
   data[last] = value;
 };
+
+/**
+ * Run passed callbacks one by one, waiting for each callback to finish before proceeding.
+ */
+exports.iterateCallbacks = (callbacks, validate) => {
+  return new Promise((resolve, reject) => {
+    let i = 0;
+    let next = (value) => {
+      if (i < callbacks.length) {
+        let func = callbacks[i++];
+        Promise.resolve(func(value)).then(value => {
+          if (validate && validate(value) != true) {
+            return resolve(value);
+          }
+          next(value);
+        }, reject);
+      } else {
+        resolve(value);
+      }
+    };
+    next();
+  });
+};

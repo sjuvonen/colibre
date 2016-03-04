@@ -64,11 +64,11 @@ class EventManager {
 
 class AsyncEventManager extends EventManager {
   emit(event) {
-    let args = Array.prototype.slice.call(arguments, 1);
-    let listeners = this.listeners.get(event) || [];
-    let events = this;
-
     return new Promise((resolve, reject) => {
+      let args = Array.prototype.slice.call(arguments, 1);
+      let listeners = this.listeners.get(event) || [];
+      let events = this;
+
       let trigger = function() {
         let copy = listeners.slice();
         let i = 0;
@@ -87,13 +87,18 @@ class AsyncEventManager extends EventManager {
           let listener = copy.shift();
           let value = listener.callback.apply(listener.context, args);
 
-          if (value instanceof Promise) {
-            value.then(next, reject);
-          } else {
-            // Remove this if intend to support passing 'next' as last argument
-            // to listeners
-            next();
-          }
+          Promise.resolve(value).then(next, reject);
+          // Promise.resolve(value).then(next, error => {
+          //   console.error("FAILED", error);
+          // });
+
+          // if (value instanceof Promise) {
+          //   value.then(next, reject);
+          // } else {
+          //   // Remove this if intend to support passing 'next' as last argument
+          //   // to listeners
+          //   next();
+          // }
         };
 
         // args.push(next);
@@ -124,9 +129,7 @@ class SharedEventManager {
 
   addEmitter(name, emitter) {
     this.emitters.push({name: name, emitter: emitter});
-    emitter.on("*", function(event, args) {
-      return this.onEvent(emitter, event, args);
-    }, this);
+    emitter.on("*", (event, args) => this.onEvent(emitter, event, args));
   }
 
   on(event, callback) {

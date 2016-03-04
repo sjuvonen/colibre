@@ -21,6 +21,10 @@ let UserSchema = new mongoose.Schema({
   }
 });
 
+UserSchema.methods.hasRole = function(role_id) {
+  return this.roles.indexOf(role_id) != -1;
+};
+
 UserSchema.statics.findByCredentials = function(username, password) {
   return new Promise((resolve, reject) => {
     this.findOne({username: username}).then(user => {
@@ -50,14 +54,23 @@ mongoose.model("role", RoleSchema);
 class Identity {
   constructor(user) {
     this.user = user;
+
+    if (!this.user) {
+      let User = mongoose.model("user");
+      this.user = new User;
+    }
   }
 
   get valid() {
-    return this.user != null;
+    return !this.user.isNew;
   }
 
   get admin() {
-    return this.valid;
+    return this.user.hasRole("admin");
+  }
+
+  get roles() {
+    return this.user.roles;
   }
 
   get username() {
@@ -119,10 +132,7 @@ passport.use(new LocalStrategy((username, password, done) => {
   );
 }));
 
-passport.serializeUser((user, done) => {
-  done(null, user.id)
-});
-
+passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser((id, done) => mongoose.model("user").findById(id).then(user => done(null, user)));
 
 class AccessManager {
@@ -175,7 +185,7 @@ class PermissionGuard {
  */
 class AdminAllowedGuard {
   access(resource, user) {
-    if (user.roles.indexOf("admin") != -1) {
+    if (user.hasRole("admin")) {
       return true;
     }
   }

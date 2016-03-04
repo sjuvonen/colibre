@@ -160,7 +160,6 @@ class PermissionGuard {
       }}).then(roles => {
         let matches = roles.filter(role => role.permissions.indexOf(permission) != -1);
         if (matches.length == 0) {
-          console.log("fail...");
           throw new Error("Requires permission " + permission);
         }
         return true;

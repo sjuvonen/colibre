@@ -4,6 +4,7 @@ let body_parser = require("body-parser");
 let cookie_parser = require("cookie-parser");
 let express = require("express");
 let events = require("./events");
+let pathutil = require("path");
 let PriorityQueue = require("./collections").PriorityQueue;
 let ServiceManager = require("./service-manager").ServiceManager;
 let ModuleManager = require("./module-manager").ModuleManager;

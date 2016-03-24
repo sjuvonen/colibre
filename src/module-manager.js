@@ -18,6 +18,7 @@ class ModuleManager {
 
   discover(directory, modules) {
     modules.forEach(name => this.load(directory, name));
+    return Promise.resolve();
   }
 
   load(path, name) {

@@ -180,7 +180,10 @@ class App {
 
     this.events.on("bootstrap", () => {
       try {
+        // ModuleManager.discover() is synchronous so we don't need to explicitly wait for
+        // the first one to finish.
         this.modules.discover(__dirname + "/modules", this.config.get("system.modules.enabled"));
+        this.modules.discover(this.rootPath + "/modules", this.config.get("modules"));
       } catch (error) {
         console.error("app.bootstrap:", error.stack);
       }
@@ -272,6 +275,10 @@ class App {
     return this.events.emit("response", event).then(() => {
       event.response._raw.send(event.response.data);
     });
+  }
+
+  get rootPath() {
+    return pathutil.dirname(require.main.filename);
   }
 }
 

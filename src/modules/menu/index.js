@@ -33,14 +33,24 @@ class MenuBlock extends Block {
   }
 }
 
-class LinkManager {
-  constructor(router) {
-    this.router = router;
+class BaseLinkManager {
+  constructor() {
     this.links = new Map;
   }
 
   addLinks(links) {
     links.forEach(link => this.add(link));
+  }
+
+  add(link) {
+    throw new Error("BaseLinkManager.add() not implemented");
+  }
+}
+
+class LinkManager extends BaseLinkManager {
+  constructor(router) {
+    super();
+    this.router = router;
   }
 
   add(link) {
@@ -59,7 +69,20 @@ class LinkManager {
   }
 }
 
-class LinkTabManager extends LinkManager {
+class MenuLinkManager extends BaseLinkManager {
+  add(link) {
+    if (!this.links.has(link.menu)) {
+      this.links.set(link.menu, []);
+    }
+    this.links.get(link.menu).push(link);
+  }
+
+  linksForMenu(name) {
+    return this.links.get(name) || [];
+  }
+}
+
+class TabLinkManager extends LinkManager {
   constructor(router) {
     super(router);
     this.reverseMap = new Map;
@@ -95,12 +118,16 @@ class LinkCollection {
 
 exports.configure = services => {
   services.register("menu.links.actions", new LinkManager(services.get("router")));
-  services.register("menu.links.tabs", new LinkTabManager(services.get("router")));
+  services.register("menu.links.tabs", new TabLinkManager(services.get("router")));
+  services.register("menu.links.menu", new MenuLinkManager);
 
   let blocks = services.get("block.manager");
 
   blocks.registerFactory("menu", (id, options) => {
-    return new MenuBlock(services.get("url.builder"), id, options);
+    let block = new MenuBlock(services.get("url.builder"), id, options);
+    services.get("menu.links.menu").linksForMenu(id).forEach(link => block.links.push(link));
+
+    return block;
   });
 
   services.get("event.manager").on("app.request", event => {
@@ -124,6 +151,13 @@ exports.configure = services => {
       try {
         let links = require(module.path + "/links.actions.json");
         services.get("menu.links.actions").addLinks(links);
+      } catch (error) {
+        // pass, file does not exist
+      }
+
+      try {
+        let links = require(module.path + "/links.menu.json");
+        services.get("menu.links.menu").addLinks(links);
       } catch (error) {
         // pass, file does not exist
       }

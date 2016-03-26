@@ -245,19 +245,6 @@ exports.configure = services => {
 
   services.get("event.manager").on("app.route", event => services.get("access.manager").access("route", event.routeMatch, event.identity.user));
 
-  services.get("event.manager").on("app.ready", event => {
-    // Admin module inserts this block in app.request event, so we must bind this handler
-    // AFTER that, i.e. after app.ready is emitted.
-    services.get("event.manager").on("app.request", event => {
-      if (event.identity.admin) {
-        event.locals.blocks.getBlock("admin_menu").links.push({
-          name: "Accounts",
-          route: "user.list"
-        });
-      }
-    });
-  });
-
   let form_builder = services.get("form.builder");
 
   services.get("form.manager").registerFactory("user.login", () => form_builder.create("user-login", [
@@ -283,39 +270,6 @@ exports.configure = services => {
       }
     }
   ]));
-
-  // services.get("form.manager").registerFactory("user.edit", () => form_builder.create("user-edit", [
-  //   {
-  //     name: "username",
-  //     type: "text",
-  //     options: {
-  //       label: "Username",
-  //     }
-  //   },
-  //   {
-  //     name: "email",
-  //     type: "email",
-  //     options: {
-  //       label: "Email"
-  //     }
-  //   },
-  //   {
-  //     name: "roles",
-  //     type: "options",
-  //     options: {
-  //       label: "Roles",
-  //       multiple: true,
-  //       options: [{key: "foo", value: "Foobar"}]
-  //     }
-  //   },
-  //   {
-  //     name: "actions",
-  //     type: "actions",
-  //     options: {
-  //       submit: true
-  //     }
-  //   }
-  // ]));
 
   services.get("form.manager").registerFactory("role.permissions", options => mongoose.model("role")
     .find()
@@ -345,25 +299,6 @@ exports.configure = services => {
       });
 
       return form_builder.create("permissions-edit", fields);
-
-    //   return form_builder.create("permissions-edit", [
-    //     {
-    //       name: "roles",
-    //       type: "container",
-    //       fields: fields,
-    //       options: {
-    //         label: "Roles",
-    //         fields: fields
-    //       }
-    //     },
-    //     {
-    //       name: "actions",
-    //       type: "actions",
-    //       options: {
-    //         submit: true
-    //       }
-    //     }
-    //   ]);
     }));
 
   services.get("form.manager").registerFactory("user.edit", () => mongoose.model("role")

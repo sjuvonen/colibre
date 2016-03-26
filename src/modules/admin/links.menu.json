@@ -1,0 +1,7 @@
+[
+  {
+    "name": "Admin",
+    "route": "admin.index",
+    "menu": "admin"
+  }
+]

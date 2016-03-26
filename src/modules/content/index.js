@@ -88,15 +88,6 @@ exports.configure = services => {
     ]);
   });
 
-  services.get("event.manager").on("app.request", event => {
-    if (event.identity.admin) {
-      event.locals.blocks.getBlock("admin_menu").links.push({
-        name: "Content",
-        route: "content.list"
-      });
-    }
-  });
-
   services.get("app").events.on("route", event => {
     if (event.identity.admin) {
       if (event.route.name.match(/^content\./) && event.route.name != "content.view") {

@@ -4,12 +4,7 @@ exports.configure = services => {
   let blocks = services.get("block.manager");
 
   blocks.registerFactory("admin-menu", options => {
-    let menu = blocks.create("menu", "admin", options);
-    menu.links.push({
-      name: "Admin",
-      url: "/admin",
-    });
-    return menu;
+    return blocks.create("menu", "admin", options);
   });
 
   services.get("event.manager").on("app.request", event => {

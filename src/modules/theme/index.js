@@ -63,7 +63,7 @@ exports.configure = services => {
     if (event.data instanceof ViewData) {
       let site_name = config.get("site_name");
       let page_title = event.data.variables.page_title || null;
-      let head_title = (page_title ? util.format("%s –", page_title) : "") + site_name;
+      let head_title = (page_title ? util.format("%s – ", page_title) : "") + site_name;
       event.data = new ViewData("layout", {
         head_title: head_title,
         page_title: page_title,

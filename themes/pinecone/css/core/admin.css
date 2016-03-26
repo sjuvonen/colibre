@@ -2,14 +2,14 @@
 .admin-toolbar {
   font-size: x-small;
   padding-top: 0.2rem;
-  padding-bottom: 0.2rem;
+  height: 1.7rem;
 }
-/* line 7, ../../scss/core/admin.scss */
+/* line 6, ../../scss/core/admin.scss */
 .admin-toolbar a.nav-link {
   padding: 0.2rem;
 }
 
-/* line 12, ../../scss/core/admin.scss */
+/* line 11, ../../scss/core/admin.scss */
 body.is-admin {
-  padding-top: 1.8rem;
+  padding-top: 1.7rem;
 }

@@ -31,6 +31,15 @@ ol.breadcrumb {
   font-size: 1.6rem;
 }
 
+/* line 30, ../scss/layout.scss */
+table.table {
+  margin-top: -1px;
+}
+/* line 33, ../scss/layout.scss */
+table.table thead th {
+  border-color: #ddd;
+}
+
 /* line 1, ../scss/core/admin.scss */
 .admin-toolbar {
   font-size: x-small;

@@ -30,3 +30,12 @@ ol.breadcrumb {
   margin: 0;
   font-size: 1.6rem;
 }
+
+/* line 30, ../scss/layout.scss */
+table.table {
+  margin-top: -1px;
+}
+/* line 33, ../scss/layout.scss */
+table.table thead th {
+  border-color: #ddd;
+}

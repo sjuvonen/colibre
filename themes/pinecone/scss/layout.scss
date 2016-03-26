@@ -26,3 +26,11 @@ ol.breadcrumb {
   margin: 0;
   font-size: 1.6rem;
 }
+
+table.table {
+  margin-top: -1px;
+
+  thead th {
+    border-color: #ddd;
+  }
+}

@@ -32,6 +32,7 @@
         "admin",
         "urlalias",
         "content",
+        "files",
         "demo"
       ]
     }

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "index",
+    "path": "/admin/files",
+    "action": "file.list",
+    "requirements": {
+      "permission": "file.edit"
+    }
+  }
+]

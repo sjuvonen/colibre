@@ -1,0 +1,7 @@
+[
+  {
+    "name": "Files",
+    "route": "files.index",
+    "menu": "admin"
+  }
+]

@@ -278,8 +278,18 @@ class App {
     });
   }
 
+  /**
+   * Path of the actual app's root.
+   */
   get rootPath() {
     return pathutil.dirname(require.main.filename);
+  }
+
+  /**
+   * Root of Colibre package. (/foo/node_modules/colibre/)
+   */
+  get colibreRoot() {
+    return pathutil.dirname(__dirname);
   }
 }
 

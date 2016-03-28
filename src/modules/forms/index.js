@@ -9,6 +9,11 @@ class FormManager extends PluginManager {
     super();
     this.cacheFactories = false;
   }
+
+  get(...args) {
+    let result = super.get(...args);
+    return Promise.resolve(result);
+  }
 }
 
 class FormBuilder {

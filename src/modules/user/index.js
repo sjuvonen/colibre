@@ -288,9 +288,7 @@ exports.configure = services => {
           options: permissions,
           value: (options && options.populated) ? role.permissions : undefined,
         }
-      }));
-
-      fields.push({
+      })).concat({
         name: "actions",
         type: "actions",
         options: {

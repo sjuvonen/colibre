@@ -11,15 +11,18 @@ let FileSchema = new mongoose.Schema({
     type: "String",
     ref: "User"
   },
+
+  // Tags for links files semantically to a specific module or purpose.
+  tags: [String],
+
+  // Usage tags for tracking where a specific file is used and when it becomes obsolete.
+  usage: [String],
   meta: {
     created: {
       type: Date,
       default: Date.now
     }
   },
-
-  // List of string IDs (custom per module etc.)
-  usage: [String]
 });
 
 mongoose.model("file", FileSchema);

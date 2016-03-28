@@ -47,37 +47,42 @@ exports.list = event => {
 };
 
 exports.edit = event => {
-  return this.urlAlias.aliasForPath(this.entityUrl.get("page", "view", event.params.page)).then(alias => {
-    let form = this.forms.get("page.edit").setData(event.params.page);
+  return Promise.all([
+    this.forms.get("page.edit"),
+    this.urlAlias.aliasForPath(this.entityUrl.get("page", "view", event.params.page)),
+  ]).then(results => {
+    let form = results[0];
+    let alias = results[1];
+    form.setData(event.params.page);
     form.fields.get("urlalias").value = alias || "";
     return new ViewData("content/edit", {
       page_title: event.params.page.id ? "Edit content" : "Create page",
       form: form,
     });
-  }, error => {
-    console.error(error.stack);
   });
 };
 
 exports.save = event => {
-  let form = this.forms.get("page.edit").setData(event.request.body)
-  let page = event.params.page;
-  if (!page.owner) {
-    page.owner = event.identity.user;
-  }
-  return this.formValidator.validate(form)
-    .then(() => page.set(form.value).set("meta.modified", Date.now()).save())
-    .then(() => {
-      if (form.value.urlalias) {
-        let base_url = this.entityUrl.get("page", "view", page);
-        return this.urlAlias.saveAlias(form.value.urlalias, base_url);
-      }
-    })
-    .then(() => event.redirect(this.entityUrl.get("page", "list", page)))
-    .catch(error => {
-      // Should handle form validation errors, too
-      console.error("FAILED", error.stack);
-    });
+  return this.forms.get("page.edit").then(form => {
+    form.setData(event.request.body);
+    let page = event.params.page;
+    if (!page.owner) {
+      page.owner = event.identity.user;
+    }
+    return this.formValidator.validate(form)
+      .then(values => page.set(values).set("meta.modified", Date.now()).save())
+      .then(() => {
+        if (form.value.urlalias) {
+          let base_url = this.entityUrl.get("page", "view", page);
+          return this.urlAlias.saveAlias(form.value.urlalias, base_url);
+        }
+      })
+      .then(() => event.redirect(this.entityUrl.get("page", "list", page)))
+      .catch(error => {
+        // Should handle form validation errors, too
+        console.error("FAILED", error.stack);
+      });
+  });
 };
 
 exports.configure = services => {

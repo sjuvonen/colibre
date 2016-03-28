@@ -23,20 +23,20 @@ exports.list = event => {
 };
 
 exports.edit = event => {
-  let form = this.formManager.get("role.edit").setData(event.params.role);
-  return new ViewData("core/form", {
+  return this.formManager.get("role.edit").then(form => new ViewData("core/form", {
     page_title: "Create role",
-    form: form
-  });
+    form: form.setData(event.params.role)
+  }));
 };
 
 exports.save = event => {
-  let form = this.formManager.get("role.edit").setData(event.request.body);
   let role = event.params.role;
-  return this.formValidator.validate(form)
-    .then(() => role.set(form.value).save())
-    .then(() => event.redirect(this.entityUrl.get("role", "list", role)))
-    .catch(error => console.error(error.stack));
+  return this.formManager.get("role.edit").then(form => {
+    return this.formValidator.validate(form.setData(event.request.body))
+      .then(() => role.set(form.value).save())
+      .then(() => event.redirect(this.entityUrl.get("role", "list", role)))
+      .catch(error => console.error(error.stack));
+  });
 };
 
 exports.permissions = event => {

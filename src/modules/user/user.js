@@ -6,9 +6,9 @@ let util = require("util");
 let ViewData = require("../view").ViewData;
 
 exports.login = event => {
-  return new ViewData("user/login", {
-    form: this.formManager.get("user.login"),
-  });
+  return this.formManager.get("user.login").then(form => new ViewData("user/login", {
+    form: form,
+  }));
 };
 
 exports.doLogin = event => {

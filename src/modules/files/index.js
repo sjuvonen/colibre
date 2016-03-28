@@ -40,6 +40,8 @@ FileSchema.pre("save", function(next) {
       this.mime = mime.lookup(this.path) || null;
       next();
     });
+  } else {
+    next();
   }
 });
 

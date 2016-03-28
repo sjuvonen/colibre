@@ -1,0 +1,7 @@
+[
+  {
+    "name": "Gallery",
+    "route": "gallery.list",
+    "menu": "admin"
+  }
+]

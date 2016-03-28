@@ -64,6 +64,11 @@ class Request {
   get body() {
     return this._raw.body;
   }
+
+  uploadInfo(name) {
+    // Multer stores files as direct members of the request.
+    return this._raw[name];
+  }
 }
 
 class Response {
@@ -256,11 +261,20 @@ class App {
     let event = new HttpEvent(new Request(req), new Response(res));
     let next = () => {
       if (middleware.length) {
-        let callback = middleware.shift()[0][0];
-        cmsutil.promisify(callback(event)).then(next).catch(error => {
-          console.error("app.onRequestBegin:", error.stack);
-          res.status(500).type("text").send(error.stack);
-        });
+        let mw = middleware.shift();
+        // let callback = mw[0].slice(-1).pop();
+        let callback = mw[0].length > 1 ? mw[0][1] : mw[0][0];
+        let pattern = mw[0].length > 1 ? mw[0][0] : null;
+
+        // Test if middleware is allowed for this path.
+        if (!pattern || this.router.isSubPath(event.request.path, pattern)) {
+          cmsutil.promisify(callback(event)).then(next).catch(error => {
+            console.error("app.onRequestBegin:", error.stack);
+            res.status(500).type("text").send(error.stack);
+          });
+        } else {
+          next();
+        }
       } else {
         done();
       }

@@ -7,6 +7,14 @@ class Router {
   }
 
   /**
+   * Test if request URI is a sub path of the static part of given pattern.
+   */
+  isSubPath(request_uri, pattern) {
+    let path = pattern.substring(pattern.indexOf(":") + 1);
+    return request_uri.substring(0, path.length) == path;
+  }
+
+  /**
    * Signatures:
    * (pattern, callback)
    * (pattern, options, callback)

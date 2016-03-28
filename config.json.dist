@@ -6,6 +6,9 @@
     "port": 8000
   },
   "storage": {
+    "uploads": {
+      "path": "public/uploads"
+    },
     "mongodb": {
       "host": "localhost",
       "database": "myfirstwebsite"

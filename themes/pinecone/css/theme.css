@@ -55,3 +55,8 @@ table.table thead th {
 body.is-admin {
   padding-top: 1.7rem;
 }
+
+/* line 1, ../scss/component/table.scss */
+th.tbl-col-small {
+  width: 200px;
+}

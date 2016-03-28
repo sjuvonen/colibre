@@ -9,7 +9,7 @@
   <thead>
     <tr>
       {% for column in columns %}
-        <th>{{ column.label }}</th>
+        <th{% if column.size %} class="tbl-col-{{ column.size }}"{% endif %}>{{ column.label }}</th>
       {% endfor %}
     </tr>
   </thead>

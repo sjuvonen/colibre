@@ -78,6 +78,12 @@ class Identity {
       return this.user.username;
     }
   }
+
+  get id() {
+    if (this.valid) {
+      return this.user.id;
+    }
+  }
 }
 
 class LoginManager {
@@ -223,9 +229,14 @@ exports.configure = services => {
     });
   });
 
-  services.get("event.manager").on("app.request", event => {
+  services.get("app").use(event => {
+    console.log("init identity");
     event.locals.identity = new Identity(event.request._raw.user);
   });
+
+  // services.get("event.manager").on("app.request", event => {
+  //   event.locals.identity = new Identity(event.request._raw.user);
+  // });
 
   services.get("event.manager").on("app.request", event => {
     let menu = event.locals.blocks.getBlock("main_menu");

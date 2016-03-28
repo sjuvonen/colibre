@@ -33,8 +33,6 @@ exports.list = event => {
 };
 
 exports.edit = event => {
-  this.formManager.get("picture.edit").then(form => console.log("mp", form.multipart));
-
   return this.formManager.get("picture.edit").then(form => new ViewData("core/form", {
     page_title: event.params.picture.isNew ? "New picture" : "Edit picture",
     form: form.setData(event.params.picture),

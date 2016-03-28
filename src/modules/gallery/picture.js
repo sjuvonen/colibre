@@ -52,7 +52,7 @@ exports.save = event => {
           picture.file = file.id;
           file.tags.push("gallery");
           file.usage.push("picture." + picture.id)
-          file.save();
+          return file.save();
         }
       }
     })

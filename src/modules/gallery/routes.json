@@ -47,13 +47,8 @@
   },
   {
     "name": "edit.post",
-    "path": "/admin/gallery/>picture",
+    "path": "/admin/gallery/:picture",
     "action": "picture.save",
-    "options": {
-      "multipart": {
-        "single": "file"
-      }
-    },
     "requirements": {
       "method": "post",
       "permission": "picture.edit"

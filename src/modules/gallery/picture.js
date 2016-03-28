@@ -41,18 +41,22 @@ exports.edit = event => {
 
 exports.save = event => {
   let picture = event.params.picture;
-  let file = event.request.files.get("file");
 
   return this.formManager.get("picture.edit")
     .then(form => this.formValidator.validate(form.setData(event.request.body)))
-    .then(values => picture.set(values).set("file", file.id).save())
+    .then(values => picture.set(values))
     .then(() => {
-      if (file.isNew) {
-        file.tags.push("gallery");
-        file.usage.push("picture." + picture.id)
-        return file.save();
+      if (event.request.files) {
+        let file = event.request.files.get("file");
+        if (file.isNew) {
+          picture.file = file.id;
+          file.tags.push("gallery");
+          file.usage.push("picture." + picture.id)
+          file.save();
+        }
       }
     })
+    .then(picture.save())
     .then(() => event.redirect(this.entityUrl.get("picture", "list", picture)))
     .catch(error => console.error(error.stack));
 };

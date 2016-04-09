@@ -11,6 +11,7 @@ let ModuleManager = require("./module-manager").ModuleManager;
 let Router = require("./router").Router;
 let HttpEventDecorator = require("./util").HttpEventDecorator;
 let cmsutil = require("./util");
+let datatree = require("./util/datatree");
 let UrlBuilder = require("./url").UrlBuilder;
 let EntityUrlBuilder = require("./url").EntityUrlBuilder;
 
@@ -20,7 +21,7 @@ class Config {
   }
 
   get(key, default_value) {
-    return cmsutil.get(this.config, key, default_value);
+    return datatree.get(this.config, key, default_value);
   }
 }
 

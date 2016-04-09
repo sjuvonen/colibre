@@ -5,22 +5,7 @@ let util = require("util");
 let EventManager = require("./events").EventManager;
 let cmsutil = require("./util");
 
-class ModuleManager {
-  constructor(services) {
-    this.services = services;
-    this.modules = new Map;
-    this.events = new EventManager;
-  }
-
-  get(name) {
-    return this.modules.get(name);
-  }
-
-  discover(directory, modules) {
-    modules.forEach(name => this.load(directory, name));
-    return Promise.resolve();
-  }
-
+class ModuleLoader {
   load(path, name) {
     if (this.modules.has(name)) {
       throw new Error(util.format("Module '%s' is already loaded", name));
@@ -50,10 +35,8 @@ class ModuleManager {
         console.error(filename + ":", err.toString());
       }
     });
-    this.modules.set(name, module);
-    this.initialize(module);
 
-    this.events.emit("load", module);
+    return Promise.resolve(module);
   }
 
   initialize(module) {
@@ -84,4 +67,31 @@ class ModuleManager {
   }
 }
 
+class ModuleManager {
+  constructor(services, loader) {
+    this.services = services;
+    this.modules = new Map;
+    this.events = new EventManager;
+    this.loader = loader || new ModuleLoader;
+  }
+
+  get(name) {
+    return this.modules.get(name);
+  }
+
+  discover(directory, modules) {
+    modules.forEach(name => this.load(directory, name));
+    return Promise.resolve();
+  }
+
+  load(path, name) {
+    return this.loader.load(path, name).then(module => {
+      this.modules.set(name, module);
+      this.loader.initialize(module);
+      this.events.emit("load", module);
+    })
+  }
+}
+
 exports.ModuleManager = ModuleManager;
+exports.ModuleLoader = ModuleLoader;

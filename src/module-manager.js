@@ -7,9 +7,6 @@ let cmsutil = require("./util");
 
 class ModuleLoader {
   load(path, name) {
-    if (this.modules.has(name)) {
-      throw new Error(util.format("Module '%s' is already loaded", name));
-    }
     let module = {
       name: name,
       path: util.format("%s/%s", path, name),
@@ -85,6 +82,9 @@ class ModuleManager {
   }
 
   load(path, name) {
+    if (this.modules.has(name)) {
+      return Promise.reject(new Error(util.format("Module '%s' is already loaded", name)));
+    }
     return this.loader.load(path, name).then(module => {
       this.modules.set(name, module);
       this.loader.initialize(module);

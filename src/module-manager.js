@@ -6,6 +6,10 @@ let EventManager = require("./events").EventManager;
 let cmsutil = require("./util");
 
 class ModuleLoader {
+  constructor(services) {
+    this.services = services;
+  }
+
   load(path, name) {
     let module = {
       name: name,
@@ -69,7 +73,7 @@ class ModuleManager {
     this.services = services;
     this.modules = new Map;
     this.events = new EventManager;
-    this.loader = loader || new ModuleLoader;
+    this.loader = loader || new ModuleLoader(this.services);
   }
 
   get(name) {

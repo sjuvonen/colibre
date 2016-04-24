@@ -1,15 +1,14 @@
 "use strict";
 
-let mongoose = require("mongoose");
 let util = require("util");
 let ViewData = require("../view").ViewData;
 
 exports.list = event => {
-  return mongoose.model("file").find({tags: "gallery"}).sort("-meta.created").then(files => {
+  return this.db.model("file").find({tags: "gallery"}).sort("-meta.created").then(files => {
     let cache = new Map(files.map(file => [file.id.toString(), file]));
     let file_ids = [...cache.keys()];
     // let file_ids = files.map(file => file.id);
-    return mongoose.model("picture").find({file: {$in: file_ids}}).then(pictures => new ViewData("core/table", {
+    return this.db.model("picture").find({file: {$in: file_ids}}).then(pictures => new ViewData("core/table", {
       page_title: "Pictures",
       columns: [
         {
@@ -62,6 +61,7 @@ exports.save = event => {
 };
 
 exports.configure = services => {
+  this.db = services.get("database");
   this.formManager = services.get("form.manager");
   this.formValidator = services.get("form.validator");
   this.entityUrl = services.get("url.entity");

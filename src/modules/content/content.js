@@ -1,6 +1,5 @@
 "use strict";
 
-let mongoose = require("mongoose");
 let util = require("util");
 let dateutil = require("../../util/date");
 let ViewData = require("../view").ViewData;
@@ -20,8 +19,8 @@ exports.view = event => {
 };
 
 exports.list = event => {
-  return mongoose.model("page").find().sort("-meta.modified").then(pages => {
-    return mongoose.model("user")
+  return this.db.model("page").find().sort("-meta.modified").then(pages => {
+    return this.db.model("user")
       .find(pages.map(page => page.owner))
       .then(users => new Map(users.map(u => [u.id, u])))
       .then(ucache => new ViewData("content/list", {
@@ -86,6 +85,7 @@ exports.save = event => {
 };
 
 exports.configure = services => {
+  this.db = services.get("database");
   this.forms = services.get("form.manager");
   this.formValidator = services.get("form.validator");
   this.urlAlias = services.get("url.alias");

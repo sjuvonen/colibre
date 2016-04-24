@@ -1,12 +1,10 @@
 "use strict";
-
-let mongoose = require("mongoose");
 let dateutil = require("../../util/date");
 let util = require("util");
 let ViewData = require("../view").ViewData;
 
 exports.list = event => {
-  return mongoose.model("file").find().sort("name").then(files => new ViewData("core/table", {
+  return this.db.model("file").find().sort("name").then(files => new ViewData("core/table", {
     page_title: "Files",
     columns: [
       {
@@ -31,4 +29,8 @@ exports.list = event => {
     ],
     data: files,
   }));
+};
+
+exports.configure = services => {
+  this.db = services.get("database");
 };

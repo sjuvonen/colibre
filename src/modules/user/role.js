@@ -1,11 +1,10 @@
 "use strict";
 
-let mongoose = require("mongoose");
 let util = require("util");
 let ViewData = require("../view").ViewData;
 
 exports.list = event => {
-  return mongoose.model("role").find().sort("name").then(roles => new ViewData("core/table", {
+  return this.db.model("role").find().sort("name").then(roles => new ViewData("core/table", {
     page_title: "Roles",
     columns: [
       {
@@ -49,13 +48,14 @@ exports.permissions = event => {
 exports.savePermissions = event => {
   return this.formManager.get("role.permissions")
     .then(form => form.setData(event.request.body))
-    .then(form => Promise.all([mongoose.model("role").find(), this.formValidator.validate(form)]))
+    .then(form => Promise.all([this.db.model("role").find(), this.formValidator.validate(form)]))
     .then(res => Promise.all(res[0].map(role => role.set("permissions", res[1][role.id]).save())))
     .then(entities => event.redirect(this.urlBuilder.fromRoute("user.role.permissions")))
     .catch(error => console.error(error.stack));
 };
 
 exports.configure = services => {
+  this.db = services.get("database");
   this.formManager = services.get("form.manager");
   this.formValidator = services.get("form.validator");
   this.entityUrl = services.get("url.entity");

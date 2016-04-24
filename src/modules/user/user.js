@@ -1,6 +1,5 @@
 "use strict";
 
-let mongoose = require("mongoose");
 let passport = require("passport");
 let util = require("util");
 let ViewData = require("../view").ViewData;
@@ -27,7 +26,7 @@ exports.account = event => {
 };
 
 exports.list = event => {
-  return mongoose.model("user").find().sort("username").then(users => new ViewData("core/table", {
+  return this.db.model("user").find().sort("username").then(users => new ViewData("core/table", {
     page_title: "Users",
     columns: [
       {
@@ -62,6 +61,7 @@ exports.save = event => {
 };
 
 exports.configure = services => {
+  this.db = services.get("mongoose");
   this.formManager = services.get("form.manager");
   this.formValidator = services.get("form.validator");
   this.urlBuilder = services.get("url.builder");

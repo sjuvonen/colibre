@@ -2,7 +2,6 @@
 
 let body_parser = require("body-parser");
 let cookie_parser = require("cookie-parser");
-let express = require("express");
 let events = require("./events");
 let pathutil = require("path");
 let PriorityQueue = require("./collections").PriorityQueue;
@@ -233,6 +232,12 @@ class App {
   }
 
   startCli() {
+    this.baseApp = {
+      use: () => {
+        // pass
+      }
+    };
+
     return this.events.emit("bootstrap", {app: this})
       .then(() => this.events.emit("ready", {app: this}))
       .then(() => {
@@ -245,6 +250,7 @@ class App {
       throw new Error("App already running!");
     }
 
+    let express = require("express");
     this.baseApp = express();
 
     this.events.on("bootstrap.server", event => {

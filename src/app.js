@@ -232,16 +232,29 @@ class App {
     return this;
   }
 
+  startCli() {
+    return this.events.emit("bootstrap", {app: this})
+      .then(() => this.events.emit("ready", {app: this}))
+      .then(() => {
+        console.log("CLI");
+      });
+  }
+
   start() {
     if (this.baseApp) {
       throw new Error("App already running!");
     }
-    this.baseApp = express();
-    this.baseApp.use(express.static("public"));
-    this.baseApp.use(cookie_parser());
-    this.baseApp.use(body_parser.urlencoded({extended: true}));
 
-    return this.events.emit("bootstrap", {app: this})
+    this.baseApp = express();
+
+    this.events.on("bootstrap.server", event => {
+      this.baseApp.use(express.static("public"));
+      this.baseApp.use(cookie_parser());
+      this.baseApp.use(body_parser.urlencoded({extended: true}));
+    });
+
+    return this.events.emit("bootstrap.server", {app: this})
+      .then(() => this.events.emit("bootstrap", {app: this}))
       .then(() => this.events.emit("ready", {app: this}))
       .then(() => {
         this.baseApp.use((req, res, next) => this.onRequestBegin(req, res, next));

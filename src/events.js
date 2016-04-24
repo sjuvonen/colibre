@@ -84,10 +84,13 @@ class AsyncEventManager extends EventManager {
 
           i++;
 
-          let listener = copy.shift();
-          let value = listener.callback.apply(listener.context, args);
-
-          Promise.resolve(value).then(next, reject);
+          try {
+            let listener = copy.shift();
+            let value = listener.callback.apply(listener.context, args);
+            Promise.resolve(value).then(next, reject);
+          } catch (error) {
+            reject(error);
+          }
           // Promise.resolve(value).then(next, error => {
           //   console.error("FAILED", error);
           // });

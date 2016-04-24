@@ -61,7 +61,7 @@ exports.save = event => {
 };
 
 exports.configure = services => {
-  this.db = services.get("mongoose");
+  this.db = services.get("database");
   this.formManager = services.get("form.manager");
   this.formValidator = services.get("form.validator");
   this.urlBuilder = services.get("url.builder");

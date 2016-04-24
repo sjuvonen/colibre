@@ -240,9 +240,7 @@ class App {
 
     return this.events.emit("bootstrap", {app: this})
       .then(() => this.events.emit("ready", {app: this}))
-      .then(() => {
-        console.log("CLI");
-      });
+      .then(() => this);
   }
 
   start() {

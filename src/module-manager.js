@@ -42,29 +42,33 @@ class ModuleLoader {
 
   initialize(module) {
     console.log("configure", module.name);
-    module.main.configure(this.services);
-    module.factories.forEach((factory, name) => {
-      console.log(util.format("configure %s.%s", module.name, name));
-      if (typeof factory == "function") {
-        module.controllers.set(name, factory(this.services));
-      } else {
-        if (factory.hasOwnProperty("configure")) {
-          factory.configure(this.services);
+    try {
+      module.main.configure(this.services);
+      module.factories.forEach((factory, name) => {
+        console.log(util.format("configure %s.%s", module.name, name));
+        if (typeof factory == "function") {
+          module.controllers.set(name, factory(this.services));
+        } else {
+          if (factory.hasOwnProperty("configure")) {
+            factory.configure(this.services);
+          }
+          module.controllers.set(name, factory);
         }
-        module.controllers.set(name, factory);
-      }
-    });
+      });
 
-    let router = this.services.get("router");
-    let routes = module.config.get("routes") || [];
+      let router = this.services.get("router");
+      let routes = module.config.get("routes") || [];
 
-    routes.forEach(options => {
-      let action = options.action.split(".");
-      let controller = module.controllers.get(action[0]);
-      let route_options = cmsutil.copy(options);
-      route_options.name = util.format("%s.%s", module.name, options.name);
-      router.route(options.path, route_options, event => cmsutil.promisify(controller[action[1]].call(controller, event)));
-    });
+      routes.forEach(options => {
+        let action = options.action.split(".");
+        let controller = module.controllers.get(action[0]);
+        let route_options = cmsutil.copy(options);
+        route_options.name = util.format("%s.%s", module.name, options.name);
+        router.route(options.path, route_options, event => cmsutil.promisify(controller[action[1]].call(controller, event)));
+      });
+    } catch (error) {
+      console.error(error.stack);
+    }
   }
 }
 

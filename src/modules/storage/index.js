@@ -3,6 +3,40 @@
 let mongoose = require("mongoose");
 let util = require("util");
 
+/**
+ * Helper class for compiling a search query (form data) into a Mongo query.
+ */
+class SearchCompiler {
+  constructor(rules, defaults) {
+    if (!rules) {
+      throw new Error("Must define compiler rules");
+    }
+
+    this.defaults = defaults || {};
+
+    if (Array.isArray(rules)) {
+      this.rules = new Map(rules);
+    } else if (typeof rules == "object") {
+      this.rules = new Map(Object.keys(rules).map(key => [key, rules[key]]));
+    }
+  }
+
+  compile(params) {
+    let query = typeof this.defaults == "function" ? this.defaults() : this.defaults;
+    this.rules.forEach((callback, field) => {
+      if (params.hasOwnProperty(field)) {
+        let partial = callback(params[field], params);
+        Object.keys(partial).forEach(key => {
+          query[key] = partial[key];
+        });
+      }
+    });
+    return query;
+  }
+}
+
+exports.SearchCompiler = SearchCompiler;
+
 exports.configure = services => {
 
   services.registerFactory("database", () => {

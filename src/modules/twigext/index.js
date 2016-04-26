@@ -11,12 +11,9 @@ FormWidget.options.set("factory", new Bootstrap);
 
 exports.configure = services => {
   let filters = {
-    transform: (value, params) => {
-      return params[0] ? filters[params[0]](value) : value;
-    },
-    mtime: date => {
-      return dateutil.mtime(date);
-    },
+    transform: (value, params) => params[0] ? filters[params[0]](value) : value,
+    mtime: date => dateutil.mtime(date),
+    time: date => moment(date).format("HH:mm"),
   };
 
   let functions = {

@@ -60,7 +60,7 @@ exports.fromConnect = middleware => {
 /**
  * Convert any return value to a Promise.
  */
-exports.promisify = value => value instanceof Promise ? value : Promise.accept(value);
+exports.promisify = value => value instanceof Promise ? value : Promise.resolve(value);
 
 /**
  * Shallow copy objects

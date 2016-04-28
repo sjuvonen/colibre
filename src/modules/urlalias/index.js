@@ -56,7 +56,7 @@ exports.configure = services => {
           if (alias) {
             event.request.overridePath(alias.path);
           }
-          return Promise.accept();
+          return Promise.resolve();
         });
     });
   });

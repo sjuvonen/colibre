@@ -10,6 +10,10 @@ class ViewData {
     this.template = template;
     this.variables = variables || {};
   }
+
+  get(variable) {
+    return this.variables[variable];
+  }
 }
 
 class TemplateMap {
@@ -65,7 +69,7 @@ class TwigRenderer {
         // NOTE: Twig crashes without these two variables!
         variables.views = "";
         variables.settings = {};
-        
+
         this.twig.renderFile(file, variables, (error, data) => {
           error ? reject(error) : resolve(data);
         });

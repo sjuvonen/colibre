@@ -61,7 +61,7 @@ exports.configure = services => {
   services.get("view").templates.addPath("layout", util.format("themes/%s/views/layout", theme));
   services.get("event.manager").on("view.render", event => {
     if (event.data instanceof ViewData) {
-      if (event.data._layout === false) {
+      if (event.data.get("_layout") === false) {
         return;
       }
       let site_name = config.get("site_name");

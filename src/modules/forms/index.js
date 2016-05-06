@@ -17,9 +17,9 @@ class FormManager extends PluginManager {
 }
 
 class FormBuilder {
-  create(name, defs) {
+  create(name, fields, options) {
     try {
-      return forms.create(name + "-form", defs);
+      return forms.create(name + "-form", fields, options);
     } catch (error) {
       console.error("formbuilder:", error.stack);
     }

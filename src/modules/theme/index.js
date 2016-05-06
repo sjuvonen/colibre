@@ -61,6 +61,9 @@ exports.configure = services => {
   services.get("view").templates.addPath("layout", util.format("themes/%s/views/layout", theme));
   services.get("event.manager").on("view.render", event => {
     if (event.data instanceof ViewData) {
+      if (event.data._layout === false) {
+        return;
+      }
       let site_name = config.get("site_name");
       let page_title = event.data.variables.page_title || null;
       let head_title = (page_title ? util.format("%s – ", page_title) : "") + site_name;

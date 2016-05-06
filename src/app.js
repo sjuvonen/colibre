@@ -37,6 +37,10 @@ class Request {
     this.meta.path = new_path;
   }
 
+  accepts(type) {
+    return this._raw.accepts(type);
+  }
+
   get _raw() {
     return this.meta.req;
   }
@@ -63,6 +67,10 @@ class Request {
 
   get body() {
     return this._raw.body;
+  }
+
+  get xhr() {
+    return this._raw.xhr;
   }
 
   uploadInfo(name) {
@@ -306,7 +314,16 @@ class App {
 
   onResponse(event) {
     return this.events.emit("response", event).then(() => {
-      event.response._raw.send(event.response.data);
+      let data = event.response.data;
+      let response = event.response._raw;
+
+      if (data instanceof Error) {
+        return response.status(500).send(error.stack);
+      } else if (typeof data == "object") {
+        return response.type("json").send(data);
+      } else {
+        return response.send(data);
+      }
     });
   }
 

@@ -12,7 +12,7 @@ class SearchCompiler {
       throw new Error("Must define compiler rules");
     }
 
-    this.defaults = defaults || {};
+    this.defaults = defaults || (() => ({}));
 
     if (Array.isArray(rules)) {
       this.rules = new Map(rules);
@@ -22,7 +22,7 @@ class SearchCompiler {
   }
 
   compile(params) {
-    let query = typeof this.defaults == "function" ? this.defaults() : this.defaults;
+    let query = this.defaults();
     this.rules.forEach((callback, field) => {
       if (params.hasOwnProperty(field)) {
         let partial = callback(params[field], params);

@@ -1,5 +1,6 @@
 "use strict";
 
+let express = require("express");
 let fs = require("fs");
 let util = require("util");
 let EventManager = require("./events").EventManager;
@@ -66,6 +67,12 @@ class ModuleLoader {
         route_options.name = util.format("%s.%s", module.name, options.name);
         router.route(options.path, route_options, event => cmsutil.promisify(controller[action[1]].call(controller, event)));
       });
+
+      if (fs.existsSync(module.path + "/public")) {
+        let webroot = util.format("/modules/%s", module.name);
+        let source = util.format("%s/public", module.path);
+        this.services.get("app").baseApp.use(webroot, express.static(source));
+      }
     } catch (error) {
       console.error(error.stack);
     }

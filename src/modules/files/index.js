@@ -17,10 +17,18 @@ let FileSchema = new mongoose.Schema({
   },
 
   // Tags for links files semantically to a specific module or purpose.
-  tags: [String],
+  tags: {
+    type: [String],
+    required: true,
+    validate: value => value.length > 0
+  },
 
   // Usage tags for tracking where a specific file is used and when it becomes obsolete.
-  usage: [String],
+  usage: {
+    type: [String],
+    required: true,
+    validate: value => value.length > 0
+  },
 
   meta: {
     created: {

@@ -53,6 +53,10 @@ class Request {
     return this._raw.hostname;
   }
 
+  get ip() {
+    return this._raw.ip;
+  }
+
   get path() {
     return this.meta.path;
   }

@@ -243,6 +243,12 @@ class App {
     this.baseApp = {
       use: () => {
         // pass
+      },
+      post: () => {
+
+      },
+      get: () => {
+
       }
     };
 

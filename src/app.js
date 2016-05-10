@@ -41,6 +41,10 @@ class Request {
     return this._raw.accepts(type);
   }
 
+  header(name) {
+    return this._raw.headers[name.toLowerCase()];
+  }
+
   get _raw() {
     return this.meta.req;
   }

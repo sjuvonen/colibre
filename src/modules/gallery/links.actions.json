@@ -1,7 +1,0 @@
-[
-  {
-    "name": "New picture",
-    "route": "gallery.new",
-    "parent": "gallery.list"
-  }
-]

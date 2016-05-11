@@ -53,7 +53,7 @@ exports.configure = services => {
       services.get("param.converter").set(model_id, value => {
         let Model = mongoose.model(model_id);
         if (value === null) {
-          return Promise.accept(new Model);
+          return Promise.resolve(new Model);
         } else {
           return Model.findById(value);
         }

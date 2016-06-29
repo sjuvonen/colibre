@@ -205,7 +205,7 @@ class App {
         // ModuleManager.discover() is synchronous so we don't need to explicitly wait for
         // the first one to finish.
         this.modules.discover(__dirname + "/modules", this.config.get("system.modules.enabled"));
-        this.modules.discover(this.rootPath + "/modules", this.config.get("modules"));
+        this.modules.discover(this.rootPath + "/modules", this.config.get("modules.enabled"));
       } catch (error) {
         console.error("app.bootstrap:", error.stack);
       }

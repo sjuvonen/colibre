@@ -100,6 +100,11 @@ class ModuleManager {
     return this.modules.get(name);
   }
 
+  config(config_id) {
+    let [module, config] = config_id.split(".");
+    return this.get(module).config.get(config);
+  }
+
   discover(directory, modules) {
     modules.forEach(name => this.load(directory, name));
     return Promise.resolve();

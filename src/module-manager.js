@@ -6,6 +6,7 @@ let util = require("util");
 let EventManager = require("./events").EventManager;
 let cmsutil = require("./util");
 let collections = require("./collections");
+let Config = require("./util/config").Config;
 
 class ModuleLoader {
   constructor(services) {
@@ -36,11 +37,14 @@ class ModuleLoader {
           let basename = filename.substring(0, filename.length - 5);
           let path = util.format("%s/%s", module.path, filename);
           let config = require(path);
-          module.config.set(basename, config);
 
           if (basename in overrides) {
             collections.merge(config, overrides[basename]);
           }
+          if (!Array.isArray(config)) {
+            config = new Config(config);
+          }
+          module.config.set(basename, config);
         }
       } catch (err) {
         console.error(filename + ":", err.toString());

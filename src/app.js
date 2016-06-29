@@ -10,19 +10,9 @@ let ModuleManager = require("./module-manager").ModuleManager;
 let Router = require("./router").Router;
 let HttpEventDecorator = require("./util").HttpEventDecorator;
 let cmsutil = require("./util");
-let datatree = require("./util/datatree");
 let UrlBuilder = require("./url").UrlBuilder;
 let EntityUrlBuilder = require("./url").EntityUrlBuilder;
-
-class Config {
-  constructor(config) {
-    this.config = config;
-  }
-
-  get(key, default_value) {
-    return datatree.get(this.config, key, default_value);
-  }
-}
+let Config = require("./util/config").Config;
 
 class Request {
   constructor(req) {

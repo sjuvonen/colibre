@@ -10,6 +10,7 @@ let collections = require("./collections");
 class ModuleLoader {
   constructor(services) {
     this.services = services;
+    this.config = services.get("config");
   }
 
   load(path, name) {

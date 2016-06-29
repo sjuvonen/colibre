@@ -5,6 +5,7 @@ let fs = require("fs");
 let util = require("util");
 let EventManager = require("./events").EventManager;
 let cmsutil = require("./util");
+let collections = require("./collections");
 
 class ModuleLoader {
   constructor(services) {
@@ -20,6 +21,8 @@ class ModuleLoader {
       factories: new Map,
       main: null,
     };
+    let overrides = this.config.get("modules.override." + name, {});
+
     fs.readdirSync(module.path).forEach(filename => {
       try {
         if (filename == "index.js") {
@@ -29,9 +32,14 @@ class ModuleLoader {
           let path = util.format("%s/%s", module.path, filename);
           module.factories.set(filename.substring(0, filename.length - 3), require(path));
         } else if (filename.substr(-5) == ".json") {
+          let basename = filename.substring(0, filename.length - 5);
           let path = util.format("%s/%s", module.path, filename);
           let config = require(path);
-          module.config.set(filename.substring(0, filename.length - 5), config);
+          module.config.set(basename, config);
+
+          if (basename in overrides) {
+            collections.merge(config, overrides[basename]);
+          }
         }
       } catch (err) {
         console.error(filename + ":", err.toString());

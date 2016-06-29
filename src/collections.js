@@ -22,3 +22,36 @@ class PriorityQueue extends Array {
 }
 
 exports.PriorityQueue = PriorityQueue;
+
+/**
+ * Helper for merging arrays or objects together.
+ *
+ * Useful for merging configurations.
+ */
+exports.merge = (target, ...sources) => {
+  if (typeof target != "object" || !target) {
+    throw new Error("Base config has to be an array or object");
+  }
+  sources.forEach(config => {
+    if (typeof config != "object" || !config) {
+      throw new Error("Mergeable config has to be an array or object");
+    }
+    if (Array.isArray(config) != Array.isArray(target)) {
+      throw new Error("Cannot merge arrays and objects together");
+    }
+
+    if (Array.isArray(target)) {
+      target.push(...config);
+    } else {
+      Object.getOwnPropertyNames(config).forEach(key => {
+        let value = config[key];
+        if (typeof value == "object" && value) {
+          if (target[key]) {
+            return exports.merge(target[key], value);
+          }
+        }
+        target[key] = value;
+      });
+    }
+  });
+};

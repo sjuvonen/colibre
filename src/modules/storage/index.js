@@ -26,9 +26,11 @@ class SearchCompiler {
     this.rules.forEach((callback, field) => {
       if (params.hasOwnProperty(field)) {
         let partial = callback(params[field], params);
-        Object.keys(partial).forEach(key => {
-          query[key] = partial[key];
-        });
+        if (partial !== undefined) {
+          Object.keys(partial).forEach(key => {
+            query[key] = partial[key];
+          });
+        }
       }
     });
     return query;

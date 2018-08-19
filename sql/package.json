@@ -1,0 +1,14 @@
+{
+  "name": "@colibre/sql",
+  "version": "1.0.0",
+  "description": "SQL query builder for Colibre CMS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samu Juvonen <samu.juvonen@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "pg": "^7.4.3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "@juvonet/f1db",
+  "version": "1.0.0",
+  "description": "Formula race result archive",
+  "main": "index.js",
+  "bin": {
+    "f1db": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samu Juvonen <samu.juvonen@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parse": "^2.5.0",
+    "massive": "^5.0.0"
+  }
+}

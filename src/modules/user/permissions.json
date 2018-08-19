@@ -1,6 +1,0 @@
-[
-  {"id": "user.edit", "label": "Manage users"},
-  {"id": "user.remove", "label": "Remove users"},
-  {"id": "role.edit", "label": "Manage roles"},
-  {"id": "role.remove", "label": "Remove roles"}
-]

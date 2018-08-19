@@ -1,3 +1,4 @@
-/node_modules
-/config.json
-/public
+# This should be in every module's own ignores but for safety's sake it's also here.
+config.json
+
+

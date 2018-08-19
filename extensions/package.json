@@ -1,0 +1,14 @@
+{
+  "name": "@colibre/extensions",
+  "version": "1.0.0",
+  "description": "Extension system for Colibre CMS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samu Juvonen <samu.juvonen@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@colibre/events": "file:../events"
+  }
+}

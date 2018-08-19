@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Colibre CMS</title>
+  <style>
+    @import url('/themes/pinecone/css/pinecone.css');
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="top-bar">
+      <div class="top-bar-left">
+        <ul class="menu">
+          <!-- <li class="menu-text"><a href="/">Juvonet</a></li> -->
+          <li><a href="/">Juvonet</a></li>
+        </ul>
+      </div>
+      <div class="top-bar-right">
+        <ul class="menu">
+          <li><a href="#1">Home</a></li>
+          <li><a href="#2">Content</a></li>
+          <li><a href="/login">Login</a></li>
+          <li><input type="search" placeholder="Quick search"/></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div class="grid-container">
+    <div class="callout warning" style="margin-top: 0.625rem">
+      <p>Entering pre-alpha quality website!</p>
+    </div>
+
+    <main>
+      {{ content }}
+    </main>
+  </div>
+</body>
+</html>

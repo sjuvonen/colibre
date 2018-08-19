@@ -1,0 +1,6 @@
+{
+  "name": "@colibre/events",
+  "description": "Event emitter library for Colibre CMS",
+  "version": "1.0.0",
+  "private": true
+}

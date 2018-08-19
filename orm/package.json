@@ -1,0 +1,20 @@
+{
+  "name": "@colibre/orm",
+  "version": "1.0.0",
+  "description": "ORM library for Colibre CMS.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samu Juvonen <samu.juvonen@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@colibre/collections": "file:../collections",
+    "knex": "^0.15.2",
+    "massive": "^5.2.0"
+  },
+  "devDependencies": {}
+}

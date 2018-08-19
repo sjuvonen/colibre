@@ -1,7 +1,0 @@
-[
-  {
-    "name": "Accounts",
-    "route": "user.list",
-    "menu": "admin"
-  }
-]

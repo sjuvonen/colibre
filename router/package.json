@@ -1,0 +1,17 @@
+{
+  "name": "@colibre/router",
+  "version": "1.0.0",
+  "description": "Router for Colibre CMS",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samu Juvonen <samu.juvonen@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@colibre/collections": "file:../collections"
+  }
+}

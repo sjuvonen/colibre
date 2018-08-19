@@ -1,0 +1,38 @@
+<form class="grid-x grid-padding-x" method="post">
+  <div class="cell small-12">
+    <h1>Registration</h1>
+    <p>Fill in your details to create an account to this website.</p>
+  </div>
+  <fieldset class="cell small-12">
+    <legend>Account information</legend>
+    <div>
+      <label>Username</label>
+      <input type="text" name="username" required/>
+    </div>
+    <div class="grid-x grid-margin-x">
+      <div class="cell medium-6">
+        <label>Password</label>
+        <input type="password" name="password" required/>
+        <p class="help-text">Minimum length is 8 characters.</p>
+      </div>
+
+      <div class="cell medium-6">
+        <label>Repeat password</label>
+        <input type="password" name="password-repeat" required/>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="cell small-12">
+    <legend>Verification</legend>
+    <div>
+      <label>Email address</label>
+      <input type="email" name="email" required/>
+      <p class="help-text">You will be mailed a confirmation link to this email address.</p>
+    </div>
+  </fieldset>
+
+  <div class="cell small-12">
+    <button type="submit" class="button">Register</button>
+  </div>
+</form>

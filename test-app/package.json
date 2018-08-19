@@ -1,0 +1,17 @@
+{
+  "name": "colibre-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@colibre/cms": "file:../cms",
+    "@colibre/pinecone": "file:../pinecone",
+    "@juvonet/f1db": "file:../f1db"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samu Juvonen <samu.juvonen@gmail.com>",
+  "license": "ISC"
+}

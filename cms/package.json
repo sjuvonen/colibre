@@ -1,0 +1,19 @@
+{
+  "name": "@colibre/cms",
+  "version": "1.0.0",
+  "description": "Colibre CMS – Lightweight, experimental content management system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samu Juvonen <samu.juvonen@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@colibre/collections": "file:../collections",
+    "@colibre/core": "file:../core",
+    "@colibre/events": "file:../events",
+    "@colibre/orm": "file:../orm",
+    "bcrypt": "^2.0.1",
+    "twig": "^1.12.0"
+  }
+}

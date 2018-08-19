@@ -1,0 +1,12 @@
+[
+  {
+    "path": "/register",
+    "name": "user.register",
+    "controller": "user.register"
+  },
+  {
+    "path": "/login",
+    "name": "user.login",
+    "controller": "user.login"
+  }
+]

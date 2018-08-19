@@ -1,5 +1,18 @@
+<h2>Season Archive</h2>
 <ol>
   {% for year in years %}
     <li>{{ year }}</li>
   {% endfor %}
 </ol>
+
+<h2>Season 2018</h2>
+<div>
+  {% set last_team = null %}
+  {% for driver in drivers %}
+    {% if driver.team_id != last_team %}
+      {% set last_team = driver.team_id %}
+      <h3>{{ driver.team_name }}</h3>
+    {% endif %}
+    <div>{{ driver.first_name }} {{ driver.last_name }}</div>
+  {% endfor %}
+</div>

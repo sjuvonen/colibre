@@ -2,7 +2,7 @@ exports.configure = async (services) => {
   this.db = await services.get('database.f1db');
 }
 
-exports.index = (request, view) => {
+exports.index = async (request, view) => {
   let a = this.db.query('SELECT DISTINCT year FROM races ORDER BY year');
   let b = this.db.query(`
     SELECT DISTINCT a.id, a.first_name, a.last_name, d.id team_id, d.name team_name
@@ -17,12 +17,10 @@ exports.index = (request, view) => {
     ORDER BY team_name, a.last_name, a.first_name
   `);
 
-  return Promise.all([a, b]).then(([years, drivers]) => {
-    let v = view('f1db/index', {
-      years: years.map(r => r.year),
-      drivers
-    });
+  let [years, drivers] = await Promise.all([a, b])
 
-    return v;
+  return view('f1db/index', {
+    years: years.map(r => r.year),
+    drivers,
   });
 }

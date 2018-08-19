@@ -1,26 +1,9 @@
-# Colibre
+Colibre
+=======
 
-Colibre is a small CMS based on Node.js and MongoDB. It isn't meant for anyone's production environment,
-rather just to run the author's own website. But open sourcing code is always nice.
+Colibre is an experimental CMS because I don't care much about building my personal website on top
+of someone else's code. This is the second iteration, building on Node.js's module system* and 
+utilizing recent improvements in JavaScript feature-set.
 
-## Components
-Main components used are as follows
-- Node.js
-- Express
-- MongoDB
-- Mongoose
-- Passport
-- Twig.js
-- Bootstrap 4
+(*) As of now, however, all the code is contained in this repo, each sub-directory being its own module. 
 
-###
-Colibre is loosely based on Express.js, i.e. it uses Express as the engine but re-implements and
-overrides some of the core components. 
-
-## Requirements
-The app is designed to be ran on latest components. Node.js (>= 5.0.0) must be executed with
-the --harmony flag to enable some experimental ES6 features.
-
-## Notes
-Colibre modules' dependencies aren't tracked in any specific way as of now. Basically they are loaded
-in the config.json.dist in the order which avoids dependency issues.

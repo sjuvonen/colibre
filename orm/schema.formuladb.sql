@@ -148,6 +148,7 @@ CREATE TABLE race_results (
   team_id int NOT NULL,
   status_id int NOT NULL,
   position int NOT NULL,
+  points int NOT NULL DEFAULT 0,
   laps int,
   duration time,
   -- best_lap time,

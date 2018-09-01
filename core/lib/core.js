@@ -145,7 +145,7 @@ class Server {
     this.services.register('middleware.static', express.static);
     this.services.register('static_files', static_files);
 
-    this.__app.use(bodyParser({ extended: true }));
+    this.__app.use(bodyParser.urlencoded({ extended: true }));
     this.__app.use(static_files.middleware);
     this.__app.use((req, res, next) => this.onRequest(req, res, next));
   }

@@ -28,7 +28,7 @@ function setupExtension(services, extension, path) {
         let controller = extension.controllers[con_id];
         let func = controller[func_id];
 
-        route.callback = (request, response) => func(request, processControllerResult);
+        route.callback = (request) => func(request, processControllerResult);
 
         router.add(route);
       }
@@ -119,7 +119,6 @@ class CMS {
   }
 
   async viewMiddleware(req, res, next) {
-    console.log('view middleware');
     try {
       if (res.locals.result instanceof Renderable) {
         let renderable = res.locals.result;
@@ -128,6 +127,7 @@ class CMS {
       }
       next();
     } catch (error) {
+      console.error(error);
       next(error);
     }
   }

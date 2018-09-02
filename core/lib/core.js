@@ -204,7 +204,7 @@ class Server {
     if (match) {
       try {
         const callback = match.params.get('_callback');
-        const result = await callback(request, response);
+        const result = await callback(match);
 
         res.locals.result = result;
 

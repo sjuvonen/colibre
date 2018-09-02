@@ -3,5 +3,20 @@
     "path": "/f1",
     "name": "f1db.index",
     "controller": "f1db.index"
+  },
+  {
+    "path": "/f1/seasons/:year/:round?",
+    "name": "f1db.season",
+    "controller": "f1db.season"
+  },
+  {
+    "path": "/f1/teams/:team",
+    "name": "f1db.team",
+    "controller": "f1db.team"
+  },
+  {
+    "path": "/f1/drivers/:driver",
+    "name": "f1db.driver",
+    "controller": "f1db.driver"
   }
 ]

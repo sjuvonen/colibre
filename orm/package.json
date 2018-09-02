@@ -14,7 +14,7 @@
   "dependencies": {
     "@colibre/collections": "file:../collections",
     "knex": "^0.15.2",
-    "massive": "^5.2.0"
+    "pg": "^7.4.3"
   },
   "devDependencies": {}
 }

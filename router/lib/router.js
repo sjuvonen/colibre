@@ -58,7 +58,7 @@ class RouteCollection {
 class Compiler {
   compile(path, options) {
     let reqs = collections.toMap((options && options.requirements) || {});
-    let keys = path.match(/:\w+\??/g) || [];
+    let keys = path.match(/:(\w+)\??/g) || [];
 
     let vars = new Map(keys.map((key) => {
       let required = key[key.length - 1] != '?';
@@ -68,11 +68,7 @@ class Compiler {
     let pattern = path.replace(/[\-\[\]\/\{\}\(\)\*\+\.\\\^\$\|]/g, '\\$&');
 
     for (let name of [...vars.keys()].sort().reverse()) {
-      let rx = reqs.get(name) || /\w+/;
-
-      if (typeof rx == 'string') {
-        rx = new RegExp(rx);
-      }
+      let rx = reqs.has(name) ? new RegExp(reqs.get(name)) : /\w+/;
 
       pattern = pattern
         .replace(new RegExp(`\\\\/:${name}\\?`), `(?:\/(${rx.source}))?`)
@@ -87,11 +83,12 @@ class Compiler {
 class Matcher {
   match(route, path, context) {
     if (route.regex.test(path)) {
-      let params = collections.toMap(route.defaults);
-      let values = route.regex.exec(path).slice(1);
+      const params = collections.toMap(route.defaults);
+      const [_foo, ...values] = route.regex.exec(path);
+      let i = 0;
 
       for (let [key, required] of route.vars) {
-        let value = values.shift();
+        const value = values[i++];
 
         if (value === undefined && required) {
           return null;
@@ -99,6 +96,8 @@ class Matcher {
 
         params.set(key, value);
       }
+
+      params.set('_context', context);
 
       return new RouteMatch(route, params);
     }
@@ -137,6 +136,10 @@ class RouteMatch {
   constructor(route, params) {
     this.__route = route;
     this.__params = collections.toMap(params);
+  }
+
+  get request() {
+    return this.__params.get('_context');
   }
 
   get route() {

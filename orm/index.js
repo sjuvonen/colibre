@@ -1,4 +1,4 @@
-const massive = require('massive');
+const knex = require('knex');
 const { assign } = require('@colibre/collections');
 const { EntityBase, EntityManager } = require('./lib/entity-manager');
 
@@ -55,12 +55,11 @@ function configure(services) {
   services.registerFactory('database', async () => {
     const config = services.get('config').getConfig('database');
     const options = assign({}, config.__data);
-    const loader_options = { allowedSchemas: ['public'] };
-    const driver_options = { pgNative: false };
-
-    const db = await massive(options, loader_options, driver_options);
-
-    return new Database(db);
+    
+    return knex({
+      client: 'pg',
+      connection: options
+    });
   });
 
   services.registerFactory('entity.manager', () => {

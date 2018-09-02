@@ -1,0 +1,87 @@
+
+<h1>{{ driver.first_name }} {{ driver.last_name }}</h1>
+
+<h2>Statistics</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Years active</th>
+      <th>Races</th>
+      <th>Wins</th>
+      <th>Podiums</th>
+      <th>Poles</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        {{ (races|first).year }}
+        –
+        {% set last_season = (races|first).year %}
+        {% for season in seasons %}
+          {% if last_season + 1 < season.year %}
+            {{ last_season }}, {{ season.year }} –
+          {% endif %}
+          {% set last_season = season.year %}
+        {% endfor %}
+        {{ (races|last).year }}
+      </td>
+      <td>{{ stats.races }}</td>
+      <td>{{ stats.wins }}</td>
+      <td>{{ stats.podiums }}</td>
+      <td>{{ stats.poles }}</td>
+    </tr>
+  </tbody>
+</table>
+
+{% set last_year = null %}
+<h2>Race results</h2>
+
+<ul class="tabs" id="seasons-tabs" data-tabs>
+  {% for season in seasons %}
+    <li class="tabs-title {% if loop.last %}is-active{% endif %}">
+      <a href="#season-{{ season.year }}">{{ season.year }}</a>
+    </li>
+  {% endfor %}
+</ul>
+
+<div class="tabs-content" data-tabs-content="seasons-tabs">
+  {% for season in seasons %}
+    <div class="tabs-panel {% if loop.last %}is-active{% endif %}" id="season-{{ season.year }}">
+      <h3>Season {{ season.year }}</h3>
+
+      <div class="grid-x grid-margin-x">
+        {% for race in season.races %}
+          <div class="cell small-3 callout {% if race.position %}primary{% else %}secondary{% endif %}">
+            <h4><a href="/f1/races/{{ race.year }}/{{ race.round }}">{{ race.name }}</a></h4>
+
+            {% if race.position %}
+              <p>
+                {% if race.position <= 3 %}
+                  {% if race.position == 1 %}
+                    {% set row_color = "#F4D03F" %}
+                    Winner
+                  {% elseif race.position == 2 %}
+                    {% set row_color = "#A6ACAF" %}
+                    Second place
+                  {% elseif race.position == 3 %}
+                    {% set row_color = "#E59866" %}
+                    Third place
+                  {% endif %}
+                  <i class="fas fa-trophy margin-left-1" style="color: {{ row_color }}"></i>
+                {% elseif race.finished %}
+                  {{ race.position }}th place
+                {% else %}
+                  <em style="opacity: .4">
+                    {{ race.status }}
+                    <i class="fas fa-car-crash margin-left-1"></i>
+                  </em>
+                {% endif %}
+              </p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>

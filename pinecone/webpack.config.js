@@ -1,11 +1,13 @@
-const path = require("path");
-const autoprefixer = require("autoprefixer");
-const precss = require("precss");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const autoprefixer = require("autoprefixer");
+const path = require("path");
+const precss = require("precss");
+const webpack = require("webpack");
 
 module.exports = {
   mode: "development",
   entry: {
+    "script": "./js/init.webpack.js",
     "pinecone": "./scss/pinecone.scss"
   },
   output: {
@@ -15,7 +17,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(scss|css)$/,
+        test: /\.scss$/,
         use: [
           MiniCssExtractPlugin.loader,
           "css-loader",
@@ -28,6 +30,10 @@ module.exports = {
           "sass-loader"
         ]
       },
+      {
+        test: /\.css$/,
+        loader: "style-loader!css-loader",
+      },
     ]
   },
   plugins: [
@@ -35,5 +41,9 @@ module.exports = {
       filename: "css/[name].css",
       chunkFilename: "css/[id].css"
     }),
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+    })
   ]
 };

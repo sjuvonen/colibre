@@ -22,8 +22,8 @@ class Renderer {
   }
 
   resolve(template_id) {
-    let [prefix, name] = template_id.split(/\//);
-    // let base_path = this.__paths.get(prefix);
+    let [prefix, ...rest] = template_id.split(/\//);
+    let name = rest.join('/');
 
     if (prefix in this.__paths) {
       let base_path = this.__paths[prefix];

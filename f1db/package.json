@@ -14,6 +14,6 @@
   "dependencies": {
     "csv-parse": "^2.5.0",
     "knex": "^0.15.2",
-    "massive": "^5.0.0"
+    "pg": "^7.4.3"
   }
 }

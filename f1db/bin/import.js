@@ -1,6 +1,5 @@
 const fs = require('fs');
 const parse_inner = require('csv-parse/lib/sync');
-const massive = require('massive');
 const knex = require('knex');
 
 const dirname = __dirname + '/../../f1db.files/dump';
@@ -182,12 +181,12 @@ async function importPitStops() {
 
 async function run_imports() {
   let imports = [
-    // importDrivers,
-    // importConstructors,
-    // importCircuits,
-    // importStatusCodes,
-    // importRaces,
-    // importRaceResults,
+    importDrivers,
+    importConstructors,
+    importCircuits,
+    importStatusCodes,
+    importRaces,
+    importRaceResults,
     importQualiResults,
     // importPitStops,
   ];

@@ -1,12 +1,12 @@
 {
-  "name": "@colibre/router",
-  "description": "Router module for Colibre CMS.",
+  "name": "@colibre/tasks",
+  "description": "Scheduled tasks for Colibre CMS.",
   "version": "1.0.0",
   "license": "ISC",
   "author": "Samu Juvonen <samu.juvonen@gmail.com>",
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "@colibre/collections": "file:../collections"
+    "@colibre/core": "file:../core"
   }
 }

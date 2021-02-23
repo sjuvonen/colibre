@@ -1,154 +1,161 @@
-const collections = require('@colibre/collections');
+import { extract } from '@colibre/collections'
 
-class Router {
-  constructor(routes, options) {
-    this.__options = collections.assign(new Map, options || {});
-    this.__routes = [];
-    this.__compiler = new Compiler;
+export class Router {
+  #compiler = new RouteCompiler()
+  #matcher = new RouteMatcher()
+  #routes = new Set()
 
-    if (routes) {
-      this.__routes = routes.map(routedef => this.add(routedef));
-    }
+  get routes () {
+    return this.#routes
   }
 
-  get options() {
-    return this.__options;
+  get compiler () {
+    return this.#compiler
   }
 
-  get matcher() {
-    if (!this.options.has('matcher')) {
-      this.options.set('matcher', new Matcher);
-    }
-    return this.options.get('matcher');
+  get matcher () {
+    return this.#matcher
   }
 
-  get routes() {
-    return this.__routes;
+  add (routeDefs) {
+    const route = this.compiler.compile(routeDefs)
+    this.#routes.add(route)
   }
 
-  add(routedef) {
-    let route = this.__compiler.compile(routedef.path, routedef);
-    route.__options.defaults = collections.toMap({ _name: routedef.name, _callback: routedef.callback }, routedef.defaults || {});
-    route.__options.requirements = collections.toMap(routedef.requirements || {});
-
-    this.routes.push(route);
-  }
-
-  match(path, context) {
-    for (let route of this.routes) {
-      let match = this.matcher.match(route, path, context);
+  match (request) {
+    for (const route of this.routes) {
+      const match = this.matcher.match(request, route)
 
       if (match) {
-        return match;
+        return match
       }
     }
+
+    throw new Error(`No match for '${request.path}' using ${request.method}`)
   }
 }
 
-class RouteCollection {
-  constructor(routes) {
-    this.__routes = routes || [];
-  }
+export class RouteCompiler {
+  compile (routeDefs) {
+    const { path, methods, ...options } = routeDefs
+    const reqs = new Map(extract(options.requirements || {}))
+    const keys = path.match(/:(\w+)\??/g) || []
 
-  add(route) {
+    const vars = new Map(keys.map((key) => {
+      const required = key[key.length - 1] !== '?'
+      return [key.substr(1).replace(/\?$/, ''), required]
+    }))
 
-  }
-}
+    let pattern = path.replace(/[-[\]/{}()*+.\\^$|]/g, '\\$&')
 
-class Compiler {
-  compile(path, options) {
-    let reqs = collections.toMap((options && options.requirements) || {});
-    let keys = path.match(/:(\w+)\??/g) || [];
-
-    let vars = new Map(keys.map((key) => {
-      let required = key[key.length - 1] != '?';
-      return [key.substr(1).replace(/\?$/, ''), required];
-    }));
-
-    let pattern = path.replace(/[\-\[\]\/\{\}\(\)\*\+\.\\\^\$\|]/g, '\\$&');
-
-    for (let name of [...vars.keys()].sort().reverse()) {
-      let rx = reqs.has(name) ? new RegExp(reqs.get(name)) : /\w+/;
+    for (const name of [...vars.keys()].sort().reverse()) {
+      const rx = reqs.has(name) ? new RegExp(reqs.get(name)) : /\w+/
 
       pattern = pattern
-        .replace(new RegExp(`\\\\/:${name}\\?`), `(?:\/(${rx.source}))?`)
-        .replace(new RegExp(`:${name}`), `(${rx.source})`);
+        .replace(new RegExp(`\\\\/:${name}\\?`), `(?:/(${rx.source}))?`)
+        .replace(new RegExp(`:${name}`), `(${rx.source})`)
     }
 
-    let regex = new RegExp(`^${pattern}$`);
-    return new Route({path, regex, vars});
+    const regex = new RegExp(`^${pattern}$`)
+
+    return new Route({ path, methods, regex, vars, ...options })
   }
 }
 
-class Matcher {
-  match(route, path, context) {
-    if (route.regex.test(path)) {
-      const params = collections.toMap(route.defaults);
-      const [_foo, ...values] = route.regex.exec(path);
-      let i = 0;
+export class RouteMatcher {
+  match (request, route) {
+    if (this.matchPath(request, route) && this.matchMethod(request, route)) {
+      const params = new Map(extract(route.defaults))
+      const values = route.regex.exec(request.path).slice(1)
+      let i = 0
 
-      for (let [key, required] of route.vars) {
-        const value = values[i++];
+      for (const [key, required] of route.vars) {
+        const value = values[i++]
 
         if (value === undefined && required) {
-          return null;
+          return null
         }
 
-        params.set(key, value);
+        params.set(key, value)
       }
 
-      params.set('_context', context);
-
-      return new RouteMatch(route, params);
+      return new RouteMatch(route, params)
     }
 
-    return null;
+    return null
+  }
+
+  matchPath (request, route) {
+    return route.regex.test(request.path)
+  }
+
+  matchMethod (request, route) {
+    if (!route.methods) {
+      return true
+    }
+
+    return route.methods.includes(request.method)
   }
 }
 
 class Route {
-  constructor(options) {
-    this.__options = options;
+  #options
+
+  constructor (options) {
+    this.#options = options
   }
 
-  get path() {
-    return this.__options.path;
+  get path () {
+    return this.#options.path
   }
 
-  get regex() {
-    return this.__options.regex;
+  get regex () {
+    return this.#options.regex
   }
 
-  get vars() {
-    return this.__options.vars;
+  get vars () {
+    return this.#options.vars
   }
 
-  get requirements() {
-    return this.__options.requirements;
+  get methods () {
+    return this.#options.methods
   }
 
-  get defaults() {
-    return this.__options.defaults;
-  }
-}
-
-class RouteMatch {
-  constructor(route, params) {
-    this.__route = route;
-    this.__params = collections.toMap(params);
+  get requirements () {
+    return this.#options.requirements
   }
 
-  get request() {
-    return this.__params.get('_context');
+  get defaults () {
+    return this.#options.defaults
   }
 
-  get route() {
-    return this.__route;
-  }
-
-  get params() {
-    return this.__params;
+  get callback () {
+    return this.#options.callback
   }
 }
 
-module.exports = { Router, Compiler, Matcher };
+export class RouteMatch {
+  #route
+  #params
+
+  constructor (route, params) {
+    this.#route = route
+    this.#params = new Map(params)
+  }
+
+  get request () {
+    return this.params.get('_context')
+  }
+
+  get route () {
+    return this.#route
+  }
+
+  get params () {
+    return this.#params
+  }
+
+  get callback () {
+    return this.route.callback
+  }
+}

@@ -1,9 +1,8 @@
-Colibre
-=======
+# Colibre
 
-Colibre is an experimental CMS because I don't care much about building my personal website on top
-of someone else's code. This is the second iteration, building on Node.js's module system* and 
-utilizing recent improvements in JavaScript feature-set.
+Colibre is an experimental CMS / framework written from scratch. It is a personal experiment and not necessarily targeting mainstream fame. 
 
-(*) As of now, however, all the code is contained in this repo, each sub-directory being its own module. 
+This is the third iteration, building on ever-improving Node.js's most recent features and my lack of recollection of what was wrong with the previous version(s).
+
+The design is modular but right now all code is contained in a single repository.
 

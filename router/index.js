@@ -1,2 +1,1 @@
-
-module.exports = require('./lib/router');
+export { Router } from './lib/router.js'

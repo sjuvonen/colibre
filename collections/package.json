@@ -1,11 +1,9 @@
 {
   "name": "@colibre/collections",
+  "description": "Collection manipulation library for Colibre CMS.",
   "version": "1.0.0",
-  "description": "Utility library for manipulating collections like Arrays, Maps and plain objects etc.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "license": "ISC",
   "author": "Samu Juvonen <samu.juvonen@gmail.com>",
-  "license": "ISC"
+  "type": "module",
+  "main": "index.js"
 }

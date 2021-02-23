@@ -1,6 +1,6 @@
 {
-  "name": "@colibre/core",
-  "description": "Colibre CMS core library.",
+  "name": "@colibre/server",
+  "description": "Web server for Colibre CMS.",
   "version": "1.0.0",
   "license": "ISC",
   "author": "Samu Juvonen <samu.juvonen@gmail.com>",
@@ -8,6 +8,9 @@
   "main": "index.js",
   "dependencies": {
     "@colibre/collections": "file:../collections",
-    "rxjs": "^6.5.5"
+    "@colibre/core": "file:../core",
+    "@colibre/router": "file:../router",
+    "body-parser": "~1.19.0",
+    "express": "~4.17.0"
   }
 }

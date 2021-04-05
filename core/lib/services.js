@@ -64,8 +64,6 @@ export class Registry {
       factory = sid
     }
 
-    console.log('F', sid, factory)
-
     if (factory.toString().substring(0, 5) === 'class') {
       this.#factories.set(sid, defaultFactory.bind(null, factory))
     } else {

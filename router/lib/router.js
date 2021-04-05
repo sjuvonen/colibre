@@ -1,5 +1,71 @@
 import { extract } from '@colibre/collections'
 
+export class RouteCompiler {
+  compile (routeDefs) {
+    const { path, methods, ...options } = routeDefs
+    const reqs = new Map(extract(options.requirements || {}))
+    const keys = path.match(/:(\w+)\??/g) || []
+
+    const vars = new Map(keys.map((key) => {
+      const required = key[key.length - 1] !== '?'
+      return [key.substr(1).replace(/\?$/, ''), required]
+    }))
+
+    let pattern = path.replace(/[-[\]/{}()*+.\\^$|]/g, '\\$&')
+
+    for (const name of [...vars.keys()].sort().reverse()) {
+      const rx = reqs.has(name) ? new RegExp(reqs.get(name)) : /\w+/
+
+      pattern = pattern
+        .replace(new RegExp(`\\\\/:${name}\\?`), `(?:/(${rx.source}))?`)
+        .replace(new RegExp(`:${name}`), `(${rx.source})`)
+    }
+
+    const regex = new RegExp(`^${pattern}$`)
+
+    console.log(`REGISTER ROUTE ${methods.join('|')}: ${path}`)
+
+    return new Route({ path, methods, regex, vars, ...options })
+  }
+}
+
+export class RouteMatcher {
+  match (request, route) {
+    if (this.matchPath(request, route) && this.matchMethod(request, route)) {
+      const params = new Map(extract(route.defaults))
+      const values = route.regex.exec(request.path).slice(1)
+      let i = 0
+
+      for (const [key, required] of route.vars) {
+        const value = values[i++]
+
+        if (value === undefined && required) {
+          return null
+        }
+
+        params.set(key, value)
+      }
+
+      return new RouteMatch(route, params)
+    }
+
+    return null
+  }
+
+  matchPath (request, route) {
+    console.log('M?', route.regex, request.path)
+    return route.regex.test(request.path)
+  }
+
+  matchMethod (request, route) {
+    if (!route.methods) {
+      return true
+    }
+
+    return route.methods.includes(request.method)
+  }
+}
+
 export class Router {
   #compiler = new RouteCompiler()
   #matcher = new RouteMatcher()
@@ -32,69 +98,6 @@ export class Router {
     }
 
     throw new Error(`No match for '${request.path}' using ${request.method}`)
-  }
-}
-
-export class RouteCompiler {
-  compile (routeDefs) {
-    const { path, methods, ...options } = routeDefs
-    const reqs = new Map(extract(options.requirements || {}))
-    const keys = path.match(/:(\w+)\??/g) || []
-
-    const vars = new Map(keys.map((key) => {
-      const required = key[key.length - 1] !== '?'
-      return [key.substr(1).replace(/\?$/, ''), required]
-    }))
-
-    let pattern = path.replace(/[-[\]/{}()*+.\\^$|]/g, '\\$&')
-
-    for (const name of [...vars.keys()].sort().reverse()) {
-      const rx = reqs.has(name) ? new RegExp(reqs.get(name)) : /\w+/
-
-      pattern = pattern
-        .replace(new RegExp(`\\\\/:${name}\\?`), `(?:/(${rx.source}))?`)
-        .replace(new RegExp(`:${name}`), `(${rx.source})`)
-    }
-
-    const regex = new RegExp(`^${pattern}$`)
-
-    return new Route({ path, methods, regex, vars, ...options })
-  }
-}
-
-export class RouteMatcher {
-  match (request, route) {
-    if (this.matchPath(request, route) && this.matchMethod(request, route)) {
-      const params = new Map(extract(route.defaults))
-      const values = route.regex.exec(request.path).slice(1)
-      let i = 0
-
-      for (const [key, required] of route.vars) {
-        const value = values[i++]
-
-        if (value === undefined && required) {
-          return null
-        }
-
-        params.set(key, value)
-      }
-
-      return new RouteMatch(route, params)
-    }
-
-    return null
-  }
-
-  matchPath (request, route) {
-    return route.regex.test(request.path)
-  }
-
-  matchMethod (request, route) {
-    if (!route.methods) {
-      return true
-    }
-
-    return route.methods.includes(request.method)
   }
 }
 

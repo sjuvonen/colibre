@@ -52,6 +52,8 @@ export class Kernel {
       this.config.extensions.map(e => this.extensions.add(e))
     }
 
+    setTimeout(() => this.events.emit('kernel.start'), 2000)
+
     console.info('kernel started')
   }
 

@@ -11,6 +11,7 @@
     "@colibre/core": "file:../core",
     "@colibre/router": "file:../router",
     "body-parser": "~1.19.0",
+    "cookie-parser": "^1.4.5",
     "express": "~4.17.0"
   }
 }

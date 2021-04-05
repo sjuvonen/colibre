@@ -1,7 +1,8 @@
 import { Kernel } from '@colibre/core'
 import { Router } from '@colibre/router'
-import bodyParser from 'body-parser'
 import express from 'express'
+import cookieParser from 'cookie-parser'
+import http from 'http'
 import { Request, Response } from './base.js'
 import { allowOrigin, handlePreflight } from './cors.js'
 import { ExtensionListener } from './extensions.js'
@@ -10,6 +11,7 @@ export class Server {
   #router = new Router()
   #extensionListener
   #express
+  #http
   #kernel
 
   constructor (config) {
@@ -21,6 +23,14 @@ export class Server {
 
   get config () {
     return this.#kernel.config
+  }
+
+  get events () {
+    return this.services.get('events')
+  }
+
+  get http () {
+    return this.#http
   }
 
   get services () {
@@ -35,8 +45,12 @@ export class Server {
       this.#kernel.start()
 
       this.#express = express()
+      this.#http = http.Server(this.#express)
+
       this.#express.use(handlePreflight(this.config.cors))
       this.#express.use(allowOrigin(this.config.cors))
+      this.#express.use(express.json())
+      this.#express.use(cookieParser())
       this.#express.use(this.onRequest.bind(this))
 
       this.#express.listen(port, addr, (error) => {
@@ -50,12 +64,13 @@ export class Server {
   }
 
   async onRequest (req, res, next) {
-    const request = new Request(req)
-    // const response = new Response(res)
-
     try {
-      const routeMatch = this.#router.match(request)
-      const result = await routeMatch.callback(...routeMatch.params.values())
+      const { body, method, path } = req
+      const routeMatch = this.#router.match({ body, method, path })
+
+      const request = new Request(req, routeMatch)
+      const response = new Response(res)
+      const result = await routeMatch.callback(request, response)
 
       if (result === null || result === undefined) {
         res.status(204).send(null)
